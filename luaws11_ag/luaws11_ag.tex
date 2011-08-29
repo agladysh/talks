@@ -1,0 +1,485 @@
+\documentclass{beamer}
+
+\usepackage{minted}
+\usepackage[utf8]{inputenc}
+
+\mode<presentation>{
+  \usetheme{default}
+}
+
+\setbeamertemplate{navigation symbols}{}
+
+%% -------------------------------------------------------------------------- %%
+
+\title{Declarative Internal DSLs in Lua}
+\subtitle{A Game-Changing Experience}
+\author{Alexander Gladysh, ag@logiceditor.com\\\textbf{L}ogic\textbf{E}ditor.com CTO, co-founder}
+\date{Lua Workshop 2011}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{document}
+
+\maketitle
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}
+
+\frametitle{Outline}
+
+\tableofcontents
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\section{Introduction}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]
+
+\frametitle{Internal Declarative DSL in Lua}
+
+\begin{minted}{lua}
+namespace:method "title"
+{
+  data = "here";
+}
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]
+
+\frametitle{...Without sugar}
+
+\begin{minted}{lua}
+_G["namespace"]:method(
+    "title"
+  ) ({
+    ["data"] = "here";
+  })
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]
+
+\frametitle{Naïve implementation}
+
+\begin{minted}{lua}
+namespace = { }
+
+namespace.method = function(self, name)
+   return function(data)
+    -- ...do something
+    -- ...with name and data
+  end
+end
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\section { Ad-hoc approach }
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]
+
+\frametitle{Hyphotetic UI description language}
+
+\begin{minted}{lua}
+ui:dialog "alert"
+{
+  ui:label "message";
+  ui:button "OK"
+  {
+    on_click = function(self)
+      self:close()
+    end;
+  };
+}
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]
+
+\frametitle{UI description language "implementation", I}
+
+\begin{minted}{lua}
+function ui:label(title)
+  return function(data)
+    return GUI.Label:new(title, data)
+  end
+end
+
+function ui:button(title)
+  return function(data)
+    return GUI.Button:new(title, data)
+  end
+end
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]
+
+\frametitle{UI description language "implementation", II}
+
+\begin{minted}{lua}
+function ui:dialog(title)
+  return function(data)
+    local dialog = GUI.Dialog:new(title)
+    for i = 1, #data do
+      dialog:add_child(data)
+    end
+    return dialog
+  end
+end
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}
+
+\frametitle{Ad-hoc approach}
+
+\begin{itemize}
+\item[+] Easy to code simple stuff
+\end{itemize}
+
+But:
+
+\begin{itemize}
+\item[$-$] Easily grows out of control
+\item[$-$] Difficult to reuse
+\item[$-$] Hard to handle errors
+\item[$-$] Hard to add new output targets
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\section { More realistic case }
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]
+
+\frametitle{Practical example: HTTP handler}
+
+\begin{minted}{lua}
+api:url "/reverse"
+{
+  doc:description [[String reverser]]
+  [[
+    Takes a string and reverses it.
+  ]]
+  api:input { data:string "text" };
+  api:output
+  {
+    data:node "result" { data:string "reversed" };
+  };
+  handler = function(param)
+    return { reversed = param.text:reverse() }
+  end;
+}
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}
+
+\frametitle{What do we want to get from that description?}
+
+\begin{itemize}
+\item \textbf{HTTP request handler itself}, with:
+  \begin{itemize}
+  \item Input validation
+  \item Multi-format output serialization (JSON, XML, ...)
+  \item Handler code static checks (globals, ...)
+  \end{itemize}
+\item \textbf{Documentation}
+\item Low-level networking \textbf{client code}
+\item Smoke \textbf{tests}
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]
+
+\frametitle{Request handler: input validation}
+
+\begin{minted}{lua}
+INPUT_LOADERS["/reverse"] = function(checker, param)
+  return
+  {
+    text = check.string(param, "string");
+  }
+end
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]
+
+\frametitle{Request handler: output serialization}
+
+\begin{minted}{lua}
+local build_formatter = function(fmt)
+    return fmt:node("nil", "result")
+    {
+        fmt:attribute("reversed");
+    }
+end
+
+OUTPUT["/reverse.xml"] = build_formatter(
+      make_xml_formatter_builder()
+  ):commit()
+
+OUTPUT["/reverse.json"] = build_formatter(
+      make_json_formatter_builder()
+  ):commit()
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]
+
+\frametitle{Request handler: the handler itself}
+
+\begin{minted}{lua}
+-- Handler code is checked for access to illegal globals.
+-- Legal globals are aliased to locals at the top.
+-- Necessary require() calls are added automatically.
+
+local handler = function(param)
+  return
+  {
+    reversed = param.text:reverse();
+  }
+end
+
+HANDLERS["/reverse.xml"] = handler;
+HANDLERS["/reverse.json"] = handler;
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]
+
+\frametitle{Documentation}
+\large{\textbf{/reverse.\{xml,json\}: String reverser}}
+
+Takes a string and reverses it.
+
+\textbf{IN}
+\begin{semiverbatim}
+  ?text=STRING
+\end{semiverbatim}
+
+\textbf{OUT}
+
+\textit{XML:}
+
+\begin{minted}{xml}
+<result reversed="STRING" />
+\end{minted}
+
+\textit{JSON:}
+
+\begin{minted}{javascript}
+{ "result": { "reversed": "STRING" } }
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]
+
+\frametitle{Smoke tests}
+
+\begin{minted}{lua}
+test:case "/reverse.xml:smoke.ok" (function()
+  local reply = assert(http.GET(
+      TEST_HOST .. "/reverse.xml?text=Foo")
+    ))
+  assert(type(reply.result) == "table")
+  assert(type(reply.result.reversed) == "string")
+end)
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}
+
+\frametitle{Too complicated for ad-hoc solution!}
+
+TODO: Spaghetti cat image goes here
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\section { The "proper" solution }
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}
+
+\frametitle{The "proper" solution?}
+
+\begin{itemize}
+\item Should be easy to add a new target.
+\item Should have nicer error reporting.
+\item Should be reusable.
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}
+
+\frametitle{The flow}
+
+\begin{itemize}
+\item Load data
+\item Validate correctness
+\item Generate output
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]
+
+\frametitle{Let's recap how our data looks like}
+
+\begin{minted}{lua}
+api:url "/reverse"
+{
+  doc:description [[String reverser]]
+  [[
+    Takes a string and reverses it.
+  ]]
+  api:input { data:string "text" };
+  api:output
+  {
+    data:node "result" { data:string "reversed" };
+  };
+  handler = function(param)
+    return { reversed = param.text:reverse() }
+  end;
+}
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]
+
+\frametitle{Surprise! It's a tree!}
+
+\begin{minted}{lua}
+{ id = "api:url", name = "/reverse";
+  { id = "doc:description", name = "String reverser";
+    text = "Takes a string and reverses it.";
+  };
+  { id = "api:input";
+    { id = "data:string", name = "text" };
+  };
+  { id = "api:output";
+    { id = "data:node", name = "result";
+      { id = "data:string", name = "reversed" };
+    };
+    handler = function(param)
+      return { reversed = param.text:reverse() }
+    end;
+  };
+}
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]
+
+\frametitle{We need a loader, that does this:}
+
+\begin{columns}
+
+\begin{column}{0.5\textwidth}
+\begin{minted}{lua}
+namespace:method "title"
+\uncover<2->{
+{
+  data = "here";
+}}
+\end{minted}
+\end{column}
+
+\begin{column}{0.05\textwidth}
+$\Rightarrow$
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\begin{minted}{lua}
+{
+  id = "namespace:method";
+  title = "title";
+\uncover<2->{data = "here";}
+}
+\end{minted}
+\end{column}
+
+\end{columns}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+
+
+%% -------------------------------------------------------------------------- %%
+
+
+%% -------------------------------------------------------------------------- %%
+
+
+
+\end{document}
+
+%% -------------------------------------------------------------------------- %%
