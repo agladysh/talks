@@ -250,18 +250,18 @@ end
 
 \begin{minted}{lua}
 local build_formatter = function(fmt)
-    return fmt:node("nil", "result")
-    {
-        fmt:attribute("reversed");
-    }
+  return fmt:node("nil", "result")
+  {
+    fmt:attribute("reversed");
+  }
 end
 
 OUTPUT["/reverse.xml"] = build_formatter(
-      make_xml_formatter_builder()
+    make_xml_formatter_builder()
   ):commit()
 
 OUTPUT["/reverse.json"] = build_formatter(
-      make_json_formatter_builder()
+    make_json_formatter_builder()
   ):commit()
 \end{minted}
 
