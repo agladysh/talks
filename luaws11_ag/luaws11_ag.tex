@@ -235,7 +235,7 @@ api:url "/reverse"
 INPUT_LOADERS["/reverse"] = function(checker, param)
   return
   {
-    text = check.string(param, "string");
+    text = checker:string(param, "text");
   }
 end
 \end{minted}
@@ -1401,8 +1401,6 @@ ag@logiceditor.com
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
-
-%% why game-changing
 
 \end{document}
 
