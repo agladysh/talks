@@ -95,7 +95,7 @@ end
 
 \begin{frame}[fragile]
 
-\frametitle{Hyphotetic UI description language}
+\frametitle{Hyphotetical UI description language}
 
 \begin{minted}{lua}
 ui:dialog "alert"
@@ -191,7 +191,7 @@ api:url "/reverse"
   doc:description [[String reverser]]
   [[
     Takes a string and reverses it.
-  ]]
+  ]];
   api:input { data:string "text" };
   api:output
   {
@@ -232,12 +232,15 @@ api:url "/reverse"
 \frametitle{Request handler: input validation}
 
 \begin{minted}{lua}
-INPUT_LOADERS["/reverse"] = function(checker, param)
+local handler = function(checker, param)
   return
   {
     text = checker:string(param, "text");
   }
 end
+
+INPUT_LOADERS["/reverse.xml"] = handler
+INPUT_LOADERS["/reverse.json"] = handler
 \end{minted}
 
 \end{frame}
@@ -296,7 +299,7 @@ HANDLERS["/reverse.json"] = handler;
 \begin{frame}[fragile]
 
 \frametitle{Documentation}
-\large{\textbf{/reverse.\{xml,json\}: String reverser}}
+\large{\textbf{/reverse.\{xml, json\}: String reverser}}
 
 Takes a string and reverses it.
 
@@ -438,7 +441,7 @@ api:url "/reverse"
 
 \begin{frame}[fragile]
 
-\frametitle{We need a loader, that does this: (I)}
+\frametitle{We need a loader that does this: (I)}
 
 \begin{columns}
 
@@ -472,7 +475,7 @@ $\Rightarrow$
 
 \begin{frame}[fragile]
 
-\frametitle{We need a loader, that does this: (II)}
+\frametitle{We need a loader that does this: (II)}
 
 \begin{columns}
 
@@ -503,7 +506,7 @@ $\Rightarrow$
 
 \begin{frame}[fragile]
 
-\frametitle{We need a loader, that does this: (III)}
+\frametitle{We need a loader that does this: (III)}
 
 \begin{columns}
 
@@ -537,7 +540,7 @@ $\Rightarrow$
 
 \begin{frame}[fragile]
 
-\frametitle{We need a loader, that does this: (IV)}
+\frametitle{We need a loader that does this: (IV)}
 
 \begin{columns}
 
@@ -574,7 +577,7 @@ $\Rightarrow$
 
 \begin{frame}[fragile]
 
-\frametitle{We need a loader, that does this: (V)}
+\frametitle{We need a loader that does this: (V)}
 
 \begin{minted}{lua}
 namespace:method "title" (function()
@@ -827,7 +830,7 @@ Loads DSL data to the in-memory tree.
 \begin{itemize}
 \item \emph{Reusability:} Works for any conforming DSL without modifications.
 \item \emph{Output targets:} N/A.
-\item \emph{Error reporting:} Does what it can, but mostly not its business.
+\item \emph{Error reporting:} Does what it can, but mostly that is behind its scope.
 \end{itemize}
 
 \end{frame}
@@ -936,7 +939,7 @@ It depends on the nature of the data.
 
 \begin{frame}[fragile]
 
-\frametitle{Tree traversal. (Hat tip to Metalua.)}
+\frametitle{Tree traversal (hat tip to Metalua)}
 
 \begin{minted}{lua}
 namespace:method "title" { -- 3rd
@@ -952,7 +955,7 @@ end
 walkers.down["namespace:method"] = function(
     walkers, node, parent
   )
-  assert(node.name == "title" and node.data == "here")
+  assert(node.name == "title" and #node.data > 0)
 end
 --
 walk_tree(dsl_data, walkers)
