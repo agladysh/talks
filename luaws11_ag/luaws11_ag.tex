@@ -95,7 +95,7 @@ end
 
 \begin{frame}[fragile]
 
-\frametitle{Hyphotetical UI description language}
+\frametitle{Hypothetical UI description language}
 
 \begin{minted}{lua}
 ui:dialog "alert"
@@ -1069,17 +1069,17 @@ end
 
 \begin{minted}{lua}
 walkers.down["namespace:method"] = function(walkers, node)
-  wakers:cat
+  walkers:cat
     [[<method name=]] (xml_escape(node.name)) [[>]]
 end
 
 walkers.up["foo:bar"] = function(walkers, node)
-  wakers:cat
+  walkers:cat
     [[<bar name=]] (xml_escape(node.name)) [[ />]]
 end
 
 walkers.up["namespace:method"] = function(walkers, node)
-  wakers:cat [[</method>]]
+  walkers:cat [[</method>]]
 end
 \end{minted}
 
