@@ -2,6 +2,7 @@
 
 \usepackage{minted}
 \usepackage[utf8]{inputenc}
+\usepackage{graphicx}
 
 \mode<presentation>{
   \usetheme{default}
@@ -348,7 +349,9 @@ end)
 
 \frametitle{Too complicated for ad-hoc solution!}
 
-TODO: Spaghetti cat image goes here
+\begin{center}
+\resizebox{\paperheight * 9 / 10}{!}{\includegraphics{spaghetticat.jpg}}
+\end{center}
 
 \end{frame}
 
@@ -1286,18 +1289,18 @@ sql:table "countries"
 Human-friendly concepts, describing data tree structure and transformation rules:
 
 \begin{minted}{lua}
-lang:enum "fruit" {
-  "fruit.orange", "fruit.apple", "fruit.banana";
-
-  render:js [[Fruits]] {
-    [[#{1}]];
-    { [[Orange]] }, { [[Apple]] }, { [[Banana]] };
+lang:enum "dow" { -- day of week
+  "dow.mon", "dow.tue", "dow.wed", "dow.thu",
+  "dow.fri", "dow.sat", "dow.sun";
+  render:js [[Weekday]] {
+    { [[Monday]] }, { [[Tuesday]] }, { [[Wednesday]] },
+    { [[Thursday]] }, { [[Friday]] }, { [[Saturday]] },
+    { [[Sunday]] };
   };
-
-  render:lua {
-    [[#{1}]];
-    { [[FRUIT.ORANGE]] }, { [[FRUIT.APPLE]] },
-    { [[FRUIT.BANANA]] };
+  render:lua { -- Matching os.date() format.
+    { [[2]] }, { [[3]] }, { [[4]] }, -- MO, TU, WE
+    { [[5]] }, { [[6]] }, { [[7]] }, -- TH, FR, SA
+    { [[1]] }; -- SU
   };
 }
 \end{minted}
@@ -1313,21 +1316,32 @@ lang:enum "fruit" {
 Machine-friendly concepts, generated from high-level DSL:
 
 \begin{minted}{lua}
-node:variant "fruit" {
-  "fruit.orange", "fruit.apple", "fruit.banana";
-  render:js [[Fruits]] { [[#{1}]] };
+node:variant "dow" {
+  "dow.mon", "dow.tue", "dow.wed", "dow.thu",
+  "dow.fri", "dow.sat", "dow.sun";
+  render:js [[Weekday]] { [[#{1}]] };
   render:lua { [[#{1}]] }; }
 
-node:literal "fruit.orange" {
-  render:js { [[Orange]] };
-  render:lua { [[FRUIT.ORANGE]] }; }
-node:literal "fruit.apple" {
-  render:js { [[Apple]] };
-  render:lua { [[FRUIT.APPLE]] }; }
-node:literal "fruit.banana" {
-  render:js { [[Banana]] };
-  render:lua { [[FRUIT.BANANA]] }; }
+node:literal "dow.mon" {
+  render:js { [[Monday]] };
+  render:lua { [[2]] }; }
+node:literal "dow.tue" {
+  render:js { [[Tuesday]] };
+  render:lua { [[3]] }; }
+-- ...
 \end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}
+
+\frametitle{The Logic Editor DSL family: visual DSL}
+
+\begin{center}
+\resizebox{\paperheight}{!}{\includegraphics{logiceditor.png}}
+\end{center}
 
 \end{frame}
 
