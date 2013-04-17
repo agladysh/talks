@@ -1,0 +1,301 @@
+% Build with xetex.
+\documentclass[handout]{beamer}
+
+\usepackage{xunicode}
+\usepackage{xltxtra}
+\usepackage{graphicx}
+
+\usepackage{setspace}
+\usepackage{ragged2e}
+
+%% -------------------------------------------------------------------------- %%
+
+\usepackage{polyglossia}
+\setmainlanguage{russian}
+\setotherlanguage{english}
+
+\setmainfont{Liberation Serif}
+\setsansfont{Liberation Sans}
+\setmonofont{Liberation Mono}
+
+%% -------------------------------------------------------------------------- %%
+
+\mode<presentation>{
+  \usetheme{default}
+}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{section in toc}[sections numbered]
+
+\addtobeamertemplate{frametitle}{
+  \ifx\insertsubsection\empty
+    \let\insertframetitle\insertsectionhead
+  \else
+    \let\insertframetitle\insertsubsectionhead
+  \fi
+}{}
+
+\addtobeamertemplate{frametitle}{
+  \ifx\insertsubsection\empty
+  \else
+    \let\insertframesubtitle\insertsectionhead
+  \fi
+}{}
+
+\makeatletter
+  \CheckCommand*\beamer@checkframetitle{%
+    \@ifnextchar\bgroup\beamer@inlineframetitle{}}
+  \renewcommand*\beamer@checkframetitle{%
+    \global\let\beamer@frametitle\relax\@ifnextchar%
+    \bgroup\beamer@inlineframetitle{}}
+\makeatother
+
+%% -------------------------------------------------------------------------- %%
+
+\title{Опыт работы с LuaJIT в нагруженных интернет-проектах}
+\author{Александр ГЛАДЫШ\\LogicEditor, CTO\\ag@logiceditor.com}
+\date{RIT++\\2013~г.}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{document}
+
+\maketitle
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Содержание}
+
+\tableofcontents
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\setlength{\parskip}{\baselineskip}
+
+%% -------------------------------------------------------------------------- %%
+
+\section{Почему Lua?}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Исторически}
+
+\begin{frame}
+  Мы вышли из игровой индустрии, где Lua правит миром.
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Прагматически}
+
+\begin{frame}
+  \begin{itemize}
+    \item Работает — быстро!
+    \item Писать — удобно!
+    \item Освоить — легко!
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Недостатки}
+
+\begin{frame}
+  \begin{itemize}
+    \item В первую очередь — где искать людей?
+    \item Основные проблемы при переучивании на Lua.
+    \item Идеосинкразии языка.
+    \item Пишите на Lua как на Lua!
+  \end{itemize}
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{О Lua и LuaJIT}
+
+\begin{frame}
+  Очень кратко о языке Lua, его происхождении, особенностях и росте популярности в последние годы. Где используется язык? IDE и специализированные IDE. Мэйнстрим и самопальные диалекты, NIH-синдром и лёгкость доработки напильником. Цена и выгоды отхода от мэйнстрима. Lua 5.1 vs. Lua 5.2. Metalua.
+\end{frame}
+
+\begin{frame}
+  LuaJIT 2.0: почти-мэйнстрим диалект Lua. JIT, FFI, производительность. Поддерживаемые платформы. Ограничения на 64-х битах. LuaJIT vs. Lua 5.2. Вкусности, планируемые для LuaJIT 2.1 и LuaJIT 3.
+\end{frame}
+
+\begin{frame}
+  Встроенный vs. расширяемый язык (на самом деле и то и то)? Ситуация до LJ2 и после. Теперь можно больше не писать на C!
+\end{frame}
+
+\begin{frame}
+  Раньше с кодом было туго, сейчас качественного готового кода на Lua много. LuaRocks.
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{Почему не писать всё PHP?}
+
+\begin{frame}
+Место для Lua / LuaJIT в вашем стэке? Как другие интернет-системы используют Lua? Как это делаем мы? С нами “всё ясно”, мы — хардкорщики из геймдева (на самом деле нет). Почему и где стоит начать применять технологии из этого доклада в существующих продакшен-системах?
+\end{frame}
+
+\begin{frame}
+a) Настраиваемая пользователем логика.
+\end{frame}
+
+\begin{frame}
+b) Отдельностоящие сервисы.
+\end{frame}
+
+\begin{frame}
+c) Код, который иначе был бы написан на C/C++/OCaml.
+\end{frame}
+
+\begin{frame}
+d) ...
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{О существующих решениях для реализации веб-сервисов на Lua}
+
+\begin{frame}
+Популярные:
+a) Kepler/WSAPI — дёшево и сердито.
+b) Luvit — модная бяка, навязывает чуждую мэйнстримному Lua нодовскую экосистему.
+c) openresty — перспективный продукт китайской инженерной мысли.
+
+Остальные — см. TODO
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{Наш нынешний стек}
+
+\begin{frame}
+a) Какие задачи мы решаем?
+\end{frame}
+
+\begin{frame}
+b) На каком железе мы живём?
+\end{frame}
+
+\begin{frame}
+c) Архитектура взаимодействия. XEN, Ubuntu (и её тюнинг), nginx (и его тюнинг), spawn-fcgi, multiwatch, LuaJIT 2, WSAPI, 0MQ, Redis (и его тюнинг). DNS-ы. Отдельностоящие сервисы. Почему так?
+\end{frame}
+
+\begin{frame}
+d) Какие луашные библиотеки мы используем и почему? Годные альтернативы нашим историческим opensource-велосипедам (и какие из велосипедов — лучше альтернатив).
+\end{frame}
+
+\begin{frame}
+e) Как сделано High Availability?
+\end{frame}
+
+\begin{frame}
+f) Как устроен деплоймент?
+\end{frame}
+
+\begin{frame}
+g) Как устроен мониторинг?
+\end{frame}
+
+\begin{frame}
+h) Какие показатели по производительности? По стабильности?
+\end{frame}
+
+\begin{frame}
+i) DSL для описания обработчиков запросов. Кодогенерация. Прочие рюшечки и сахар (бонус: DSL для описания SQL-данных с возможностью автогенерации продвинутого UI бэкофиса для этих данных).
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{Грабли}
+
+\begin{frame}
+a) Какие были основные проблемы? Как их решали? Несколько общих советов по отладке и оптимизации производительности при работе с Lua. Отладка отладчиком и по логам, оптимизация GC, какие параметры нужно мониторить. Профайлинг кода на LJ2. Автотесты.
+\end{frame}
+
+\begin{frame}
+b) Какие проблемы не решены, и как с этим жить?
+\end{frame}
+
+\begin{frame}
+i. Long polling / comet.
+\end{frame}
+
+\begin{frame}
+ii. TODO
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{Каким мы видим стек следующего поколения?}
+
+\begin{frame}
+a) Ориентироваться на openresty, но не использовать его напрямую. Почему?
+\end{frame}
+
+\begin{frame}
+b) Новая архитектура.
+\end{frame}
+
+\begin{frame}
+i. Проще! Ещё проще!
+\end{frame}
+
+\begin{frame}
+ii. Отказ от LuaRocks.
+\end{frame}
+
+\begin{frame}
+iii. Полный переход на FFI.
+\end{frame}
+
+\begin{frame}
+iv. Отказ от FCGI и WSAPI. Переход на epoll и библиотеку парсинга HTTP.
+\end{frame}
+
+\begin{frame}
+v. Отказ от сервера конфигураций.
+\end{frame}
+
+\begin{frame}
+vi Улучшенная High Availability.
+\end{frame}
+
+\begin{frame}
+vii Неблокирующее API на корутинах, без коллбэков. Архитектура. Особенности реализации для основных сервисов (HTTP[S], Redis, MySQL/Postgres).
+\end{frame}
+
+\begin{frame}
+viii. Новый дизайн DSL.
+\end{frame}
+
+\begin{frame}
+ix. ...
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{Хотите знать больше?}
+
+\begin{frame}
+9. Рекомендуемые источники информации о Lua, LuaJIT и сопутствующих технологиях.
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{Вопросы?}
+
+\begin{frame}
+
+\begin{center}
+ag@logiceditor.com
+\end{center}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\end{document}
