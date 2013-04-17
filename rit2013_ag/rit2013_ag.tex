@@ -7,6 +7,8 @@
 \usepackage{xltxtra}
 \usepackage{graphicx}
 
+\usepackage{color}
+
 \usepackage{setspace}
 \usepackage{ragged2e}
 
@@ -16,9 +18,17 @@
 \setmainlanguage{russian}
 \setotherlanguage{english}
 
-\setmainfont{Liberation Serif}
-\setsansfont{Liberation Sans}
-\setmonofont{Liberation Mono}
+% NB: To get MS fonts for OS X:
+%
+% 1) Install MS Open XML Converter.
+% 2) Install OpenXML_all_fonts.pkg from inside of Converter's mpkg.
+%
+% http://www.labnol.org/software/tutorials/\
+% free-download-calibri-font-on-mac/3684/
+
+\setmainfont{Calibri}
+\setsansfont{Calibri}
+\setmonofont{Consolas}
 
 %% -------------------------------------------------------------------------- %%
 
@@ -26,8 +36,15 @@
   \usetheme{default}
 }
 
+\useinnertheme{circles}
+
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{section in toc}[sections numbered]
+
+\definecolor{chart11}{RGB}{197, 0, 11}
+\setbeamercolor{title}{fg=chart11}
+\setbeamercolor{frametitle}{fg=chart11}
+\setbeamercolor{itemize item}{fg=chart11}
 
 \addtobeamertemplate{frametitle}{
   \ifx\insertsubsection\empty
@@ -54,17 +71,25 @@
 
 %% ========================================================================== %%
 
-\title{Опыт работы с LuaJIT в нагруженных интернет-проектах}
+\title{Опыт работы с LuaJIT\\в нагруженных интернет-проектах}
 \author{Александр ГЛАДЫШ\\LogicEditor, CTO\\ag@logiceditor.com}
-\date{RIT++\\2013~г.}
+\date{}
 
 %% ========================================================================== %%
 
 \begin{document}
 
+\usebackgroundtemplate{
+  \includegraphics[width=\paperwidth,height=\paperheight]{back_title}
+}
+
 \maketitle
 
 %% ========================================================================== %%
+
+\usebackgroundtemplate{
+  \includegraphics[width=\paperwidth,height=\paperheight]{back}
+}
 
 \begin{frame}{Содержание}
 
