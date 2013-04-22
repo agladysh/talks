@@ -234,50 +234,153 @@
 
 \section{Наш нынешний стек}
 
+%% -------------------------------------------------------------------------- %%
+
 \subsection*{Фреймворки для построения веб-сервисов на Lua}
 
 \begin{frame}
-Некоторые популярные:
+  Некоторые популярные:
   \begin{itemize}
     \item Kepler/WSAPI
-    \item Luvit
     \item OpenResty
+    \item Luvit
   \end{itemize}
 
-У нас — велосипед.
+  У нас — велосипед.
 \end{frame}
 
-\begin{frame}
-a) Какие задачи мы решаем?
-\end{frame}
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Какие веб-задачи мы решаем при помощи Lua?}
 
 \begin{frame}
-b) На каком железе мы живём?
+  \begin{itemize}
+    \item Браузерные и социальные игры.
+    \item Баннерные сети.
+    \item Ненагруженные веб-сервисы.
+  \end{itemize}
 \end{frame}
 
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{На каком "железе" мы живём?}
+
 \begin{frame}
-c) Архитектура взаимодействия. XEN, Ubuntu (и её тюнинг), nginx (и его тюнинг), spawn-fcgi, multiwatch, LuaJIT 2, WSAPI, 0MQ, Redis (и его тюнинг). DNS-ы. Отдельностоящие сервисы. Почему так?
+  \begin{itemize}
+    \item Linode
+    \item Hetzner EX6
+  \end{itemize}
 \end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{ОС}
+
+\begin{frame}
+  \begin{itemize}
+    \item Xen XCP поверх Ubuntu Sever.
+    \item Виртуальные машины на Ubuntu Server:
+    \begin{itemize}
+      \item Фронтенды (nginx)
+      \item Бэкенды (32-bit)
+      \item Воркеры (32-bit)
+      \item БД (Redis, MySQL)
+      \item Системная (Bind, конфиг-сервер на nginx)
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Бэкенды}
+
+\begin{frame}
+  \begin{itemize}
+    \item nginx
+    \item spawn-fcgi + multiwatch
+    \item LuaJIT 2.0
+    \item FCGI/WSAPI
+    \item Код приложения
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Воркеры}
+
+\begin{frame}
+  \begin{itemize}
+    \item LuaJIT 2.0
+    \item Код приложения
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{IPC}
+
+\begin{frame}
+  \begin{itemize}
+    \item ØMQ
+    \item Основные задачи:
+    \begin{itemize}
+      \item Замена неработающим сигналам.
+      \item Сброс кешей внутри процессов.
+      \item Задачи воркерам передаются через Redis.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Тюнинг системы}
+
+\begin{frame}
+  \begin{itemize}
+    \item OS
+    \begin{itemize}
+      \item \url{bit.ly/kernel-magic} (для TCP-intensive)
+    \end{itemize}
+    \item Redis
+    \begin{itemize}
+      \item I/O Scheduler: noop on guests, deadline on host
+    \end{itemize}
+    \item nginx
+    % TODO!
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
 
 \begin{frame}
 d) Какие луашные библиотеки мы используем и почему? Годные альтернативы нашим историческим opensource-велосипедам (и какие из велосипедов — лучше альтернатив).
 \end{frame}
 
+%% -------------------------------------------------------------------------- %%
+
 \begin{frame}
 e) Как сделано High Availability?
 \end{frame}
+
+%% -------------------------------------------------------------------------- %%
 
 \begin{frame}
 f) Как устроен деплоймент?
 \end{frame}
 
+%% -------------------------------------------------------------------------- %%
+
 \begin{frame}
 g) Как устроен мониторинг?
 \end{frame}
 
+%% -------------------------------------------------------------------------- %%
+
 \begin{frame}
 h) Какие показатели по производительности? По стабильности?
 \end{frame}
+
+%% -------------------------------------------------------------------------- %%
 
 \begin{frame}
 i) DSL для описания обработчиков запросов. Кодогенерация. Прочие рюшечки и сахар (бонус: DSL для описания SQL-данных с возможностью автогенерации продвинутого UI бэкофиса для этих данных).
@@ -359,11 +462,11 @@ ix. ...
   \begin{center}
   \begin{minipage}{0.6\linewidth}
   \begin{itemize}
-    \item[Official Site] lua.org, luajit.org
-    \item[Wiki] lua-users.org/wiki, wiki.luajit.org
-    \item[Mailing Lists] lua.org/lua-l.html, luajit.org/list.html
-    \item[StackOverflow] stackoverflow.com/questions/tagged/Lua
-    \item[IRC] \#lua at irc.freenode.net
+    \item[Official Site] \url{lua.org}, \url{luajit.org}
+    \item[Wiki] lua-users.org/wiki, \url{wiki.luajit.org}
+    \item[Mailing Lists] \url{lua.org/lua-l.html}, \url{luajit.org/list.html}
+    \item[StackOverflow] \url{stackoverflow.com/questions/tagged/Lua}
+    \item[IRC] \#lua at \url{irc.freenode.net}
   \end{itemize}
   \end{minipage}
   \end{center}
