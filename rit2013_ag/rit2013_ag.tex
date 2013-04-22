@@ -232,7 +232,7 @@
 
 %% ========================================================================== %%
 
-\section{Наш нынешний стек}
+\section{Наш стек}
 
 %% -------------------------------------------------------------------------- %%
 
@@ -346,7 +346,9 @@
       \item I/O Scheduler: noop on guests, deadline on host
     \end{itemize}
     \item nginx
-    % TODO!
+    \begin{itemize}
+      \item worker_rlimit_nofile
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
