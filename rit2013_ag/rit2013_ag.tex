@@ -347,7 +347,7 @@
     \end{itemize}
     \item nginx
     \begin{itemize}
-      \item worker_rlimit_nofile
+      \item worker\_rlimit\_nofile
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -383,12 +383,27 @@
 
 %% -------------------------------------------------------------------------- %%
 
+\subsection*{DSL и кодогенерация}
+
 \begin{frame}
-
-i) DSL для описания обработчиков запросов. Кодогенерация. Прочие рюшечки и сахар (бонус: DSL для описания SQL-данных с возможностью автогенерации продвинутого UI бэкофиса для этих данных).
-
+  \begin{itemize}
+    \item Обработчики HTTP запросов
+    \begin{itemize}
+      \item Код (частично статически валидируется)
+      \item Документация
+      \item (В дальнейшем) Smoke-тесты
+    \end{itemize}
+    \item Структура SQL
+    \begin{itemize}
+      \item "ORM" wrapper code
+      \item DB schema patches
+      \item Auto-backoffice
+      \item Документация
+    \end{itemize}
+    \item \url{bit.ly/lua-dsl-talk}
+    \item Генерация типичных частей проекта на шаблонах.
+  \end{itemize}
 \end{frame}
-
 
 %% -------------------------------------------------------------------------- %%
 
