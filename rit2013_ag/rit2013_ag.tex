@@ -450,7 +450,7 @@
 
 %% -------------------------------------------------------------------------- %%
 
-\subsection*{Нерешённые проблемы}
+\subsection*{Основные нерешённые проблемы}
 
 \begin{frame}
   \begin{itemize}
@@ -464,48 +464,22 @@
 
 \section{Стек следующего поколения}
 
-\begin{frame}
-a) Ориентироваться на openresty, но не использовать его напрямую. Почему?
-\end{frame}
+%% -------------------------------------------------------------------------- %%
 
-\begin{frame}
-b) Новая архитектура.
-\end{frame}
+% TODO: Hack!
+\section*{}
+\subsection*{Стек следующего поколения}
 
+% TODO: Rethink this
 \begin{frame}
-i. Проще! Ещё проще!
-\end{frame}
-
-\begin{frame}
-ii. Отказ от LuaRocks.
-\end{frame}
-
-\begin{frame}
-iii. Полный переход на FFI.
-\end{frame}
-
-\begin{frame}
-iv. Отказ от FCGI и WSAPI. Переход на epoll и библиотеку парсинга HTTP.
-\end{frame}
-
-\begin{frame}
-v. Отказ от сервера конфигураций.
-\end{frame}
-
-\begin{frame}
-vi Улучшенная High Availability.
-\end{frame}
-
-\begin{frame}
-vii Неблокирующее API на корутинах, без коллбэков. Архитектура. Особенности реализации для основных сервисов (HTTP[S], Redis, MySQL/Postgres).
-\end{frame}
-
-\begin{frame}
-viii. Новый дизайн DSL.
-\end{frame}
-
-\begin{frame}
-ix. ...
+  \begin{itemize}
+    \item Неблокирующее API при помощи кооперативной многозадачности, без коллбэков. Вдохновляться OpenResty, но не использовать напрямую.
+    \item Полный переход на FFI.
+    \item Отказ от LuaRocks.
+    \item Отказ от FCGI, переход на epoll и lua-http-parser.
+    \item Максимально упрощённая архитектура. Отказ от сервера конфигурации.
+    \item Новый дизайн DSL.
+  \end{itemize}
 \end{frame}
 
 %% ========================================================================== %%
