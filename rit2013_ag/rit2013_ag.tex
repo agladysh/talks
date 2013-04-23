@@ -76,7 +76,7 @@
 %% ========================================================================== %%
 
 \title{Опыт работы с LuaJIT\\в нагруженных интернет-проектах}
-\author{Александр ГЛАДЫШ\\CTO, LogicEditor}
+\author{Александр Гладыш\\CTO, LogicEditor}
 \date{}
 
 %% ========================================================================== %%
@@ -156,10 +156,8 @@
 \begin{frame}
   \begin{itemize}
     \item JIT, FFI, производительность.
-    \item Поддерживаемые платформы.
     \item Ограничения для x86\_64.
     \item LuaJIT vs. Lua 5.2.
-    \item Следующие версии LuaJIT.
   \end{itemize}
 \end{frame}
 
@@ -310,6 +308,7 @@
 
 \begin{frame}
   \begin{itemize}
+    \item runit
     \item LuaJIT 2.0
     \item Код приложения
   \end{itemize}
@@ -422,11 +421,15 @@
 
 %% -------------------------------------------------------------------------- %%
 
-\subsection*{Основные проблемы}
+\subsection*{С чем мы сталкивались?}
 
 \begin{frame}
-% TODO!!!
-  \begin{center}и решения\end{center}
+  \begin{itemize}
+    \item Пара "мистических" проблем, вызванных багами в бетах LuaJIT (всё исправлено).
+    \item Проблемы из-за одновременно установленных двух версий одного камня в LuaRocks.
+    \item Лопающийся Redis.
+    \item Падучие диски Hetzner.
+  \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
@@ -436,10 +439,11 @@
 \begin{frame}
   \begin{itemize}
     % TODO!!!
-    \item Статическая валидация кода.
+    \item Частичная статическая валидация кода.
     \item Проверки в рантайме.
     \item Автотесты.
     \item Тюнинг и мониторинг GC.
+    \item Мониторинг времени запросов, расхода памяти на запрос и проч.
     \item Отладка по логам.
   \end{itemize}
 \end{frame}
@@ -454,9 +458,14 @@
 
 \begin{frame}
   \begin{itemize}
-    \item Long polling / comet.
+    \item Long polling / Comet.
     \item Нормальная поддержка сигналов.
     \item Более эффективная загрузка CPU.
+    \item LuaRocks:
+    \begin{itemize}
+      \item Возможность установить две версии одного камня.
+      \item Отсутствие возможности апгрейдить камни.
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -507,7 +516,15 @@
 \begin{frame}
 
 \begin{center}
-\Huge{ag@logiceditor.com}
+\Huge{@agladysh}
+\end{center}
+
+\begin{center}
+\Large{ag@logiceditor.com}
+\end{center}
+
+\begin{center}
+\url{meetup.com/Lua-in-Moscow}
 \end{center}
 
 \end{frame}
