@@ -244,7 +244,7 @@
     \item Luvit
   \end{itemize}
 
-  У нас — велосипед.
+  У нас — велосипед, построенный на WSAPI.
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
@@ -255,7 +255,7 @@
   \begin{itemize}
     \item Браузерные и социальные игры.
     \item Баннерные сети.
-    \item Ненагруженные веб-сервисы.
+    \item Ненагруженные веб-сервисы, мобильные игры и проч.
   \end{itemize}
 \end{frame}
 
@@ -279,11 +279,11 @@
     \item Xen XCP поверх Ubuntu Sever.
     \item Виртуальные машины на Ubuntu Server:
     \begin{itemize}
-      \item Фронтенды (nginx)
-      \item Бэкенды (32-bit)
-      \item Воркеры (32-bit)
-      \item БД (Redis, MySQL)
-      \item Системная (Bind, конфиг-сервер на nginx)
+      \item Фронтенды (nginx).
+      \item Бэкенды (32-bit).
+      \item Воркеры (32-bit).
+      \item БД (Redis, MySQL).
+      \item Системная (Bind, конфиг-сервер на nginx, деплоймент, мониторинг).
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -386,21 +386,21 @@
 
 \begin{frame}
   \begin{itemize}
-    \item Обработчики HTTP запросов
+    \item Обработчики HTTP запросов.
     \begin{itemize}
-      \item Код (частично статически валидируется)
-      \item Документация
-      \item (В дальнейшем) Smoke-тесты
+      \item Код (частично статически валидируется).
+      \item Документация.
+      \item (В дальнейшем) Smoke-тесты.
     \end{itemize}
-    \item Структура SQL
+    \item Структура SQL.
     \begin{itemize}
-      \item "ORM" wrapper code
-      \item DB schema patches
-      \item Auto-backoffice
-      \item Документация
+      \item "ORM" wrapper code.
+      \item DB schema patches.
+      \item Auto-backoffice.
+      \item Документация.
     \end{itemize}
     \item \url{bit.ly/lua-dsl-talk}
-    \item Генерация типичных частей проекта на шаблонах.
+    \item Генерация типичных частей проекта из текстовых шаблонов.
   \end{itemize}
 \end{frame}
 
@@ -424,8 +424,10 @@
 \subsection*{С чем мы сталкивались?}
 
 \begin{frame}
+  Основное:
+
   \begin{itemize}
-    \item Пара "мистических" проблем, вызванных багами в бетах LuaJIT (всё исправлено).
+    \item Пара "мистических" проблем, вызванных багами в ранних бетах LuaJIT (всё исправлено).
     \item Проблемы из-за одновременно установленных двух версий одного камня в LuaRocks.
     \item Лопающийся Redis.
     \item Падучие диски Hetzner.
@@ -482,11 +484,11 @@
 % TODO: Rethink this
 \begin{frame}
   \begin{itemize}
-    \item Неблокирующее API при помощи кооперативной многозадачности, без коллбэков. Вдохновляться OpenResty, но не использовать напрямую.
-    \item Полный переход на FFI.
+    \item Неблокирующее API при помощи кооперативной многозадачности, без коллбэков. Вдохновляться либо доточить OpenResty.
+    \item Полный переход на LuaJIT FFI.
     \item Отказ от LuaRocks.
     \item Отказ от FCGI, переход на epoll и lua-http-parser.
-    \item Максимально упрощённая архитектура. Отказ от сервера конфигурации.
+    \item Максимально упрощённая архитектура. Отказ от сервера конфигурации. Ещё больше кодогенерации.
     \item Новый дизайн DSL.
   \end{itemize}
 \end{frame}
