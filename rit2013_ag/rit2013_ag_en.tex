@@ -1,0 +1,532 @@
+% Build with xetex.
+\documentclass[aspectratio=169,handout,bigger]{beamer}
+
+%% -------------------------------------------------------------------------- %%
+
+\usepackage{xunicode}
+\usepackage{xltxtra}
+\usepackage{graphicx}
+
+\usepackage{color}
+
+\usepackage{setspace}
+\usepackage{ragged2e}
+
+%% -------------------------------------------------------------------------- %%
+
+\usepackage{polyglossia}
+\setmainlanguage{english}
+\setotherlanguage{russian}
+
+% NB: To get MS fonts for OS X:
+%
+% 1) Install MS Open XML Converter.
+% 2) Install OpenXML_all_fonts.pkg from inside of Converter's mpkg.
+%
+% http://www.labnol.org/software/tutorials/\
+% free-download-calibri-font-on-mac/3684/
+
+\setmainfont{Calibri}
+\setsansfont{Calibri}
+\setmonofont{Consolas}
+
+%% -------------------------------------------------------------------------- %%
+
+\mode<presentation>{
+  \usetheme{default}
+}
+
+\useinnertheme{circles}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{section in toc}[sections numbered]
+
+\definecolor{chart11}{RGB}{197, 0, 11}
+\setbeamercolor{title}{fg=chart11}
+\setbeamercolor{author}{fg=chart11}
+\setbeamercolor{frametitle}{fg=chart11}
+\setbeamercolor{itemize item}{fg=chart11}
+\setbeamercolor{itemize subitem}{fg=chart11}
+\setbeamercolor{itemize subsubitem}{fg=chart11}
+\setbeamercolor{section in toc}{fg=chart11}
+
+\addtobeamertemplate{frametitle}{
+  \ifx\insertsubsection\empty
+    \let\insertframetitle\insertsectionhead
+  \else
+    \let\insertframetitle\insertsubsectionhead
+  \fi
+}{}
+
+\addtobeamertemplate{frametitle}{
+  \ifx\insertsubsection\empty
+  \else
+    \let\insertframesubtitle\insertsectionhead
+  \fi
+}{}
+
+\makeatletter
+  \CheckCommand*\beamer@checkframetitle{%
+    \@ifnextchar\bgroup\beamer@inlineframetitle{}}
+  \renewcommand*\beamer@checkframetitle{%
+    \global\let\beamer@frametitle\relax\@ifnextchar%
+    \bgroup\beamer@inlineframetitle{}}
+\makeatother
+
+%% ========================================================================== %%
+
+\title{Using LuaJIT in mid-load web-projects}
+\author{Alexander Gladysh\\CTO, LogicEditor}
+\date{}
+
+%% ========================================================================== %%
+
+\begin{document}
+
+\usebackgroundtemplate{
+  \includegraphics[width=\paperwidth,height=\paperheight]{back_title}
+}
+
+\maketitle
+
+%% ========================================================================== %%
+
+\usebackgroundtemplate{
+  \includegraphics[width=\paperwidth,height=\paperheight]{back}
+}
+
+\begin{frame}{Contents}
+
+\tableofcontents
+
+\end{frame}
+
+%% ========================================================================== %%
+
+%\section{О Lua и LuaJIT}
+
+%% -------------------------------------------------------------------------- %%
+
+% TODO: Hack!
+\section*{}
+\subsection*{On Lua and LuaJIT}
+
+\begin{frame}{}
+  Lua:
+  \begin{itemize}
+    \item powerful,
+    \item fast,
+    \item lightweight,
+    \item extensible,
+    \item embeddable
+  \end{itemize}
+  scripting programming language.
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\section{On Lua and LuaJIT}
+\subsection*{Language}
+
+\begin{frame}
+  \begin{itemize}
+    \item Origins.
+    \item Popularity growth.
+    \item Where is Lua used?
+    \item LuaRocks.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Popular Dialects}
+
+\begin{frame}
+  \begin{itemize}
+    \item Lua 5.1 vs. Lua 5.2,
+    \item LuaJIT 2.0,
+    \item Metalua.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{LuaJIT 2.0}
+
+\begin{frame}
+  \begin{itemize}
+    \item JIT, FFI, performance.
+    \item Limitations on x86\_64.
+    \item LuaJIT vs. Lua 5.2.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Why Lua?}
+
+\begin{frame}
+  Historically: We're coming from computer games industry, where Lua "rules the world".
+  \\~\\
+  Pragmatically:
+  \begin{itemize}
+    \item Works fast!
+    \item Pleasant to code!
+    \item Easy to learn!
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Where to get programmers?}
+
+\begin{frame}
+  \begin{center}
+    Reeducation.
+  \end{center}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Main problems learning Lua}
+
+\begin{frame}
+  \begin{itemize}
+    \item Mindless tinkering with the language.
+    \begin{itemize}
+      \item NIH-syndrome. Lua is to easy to tinker with.
+      \item Diverging from the mainstream. Costs and benefits.
+    \end{itemize}
+    \item Language idiosyncrasies:
+    \begin{itemize}
+      \item Global variables by default.
+      \item Arrays are indexed from 1.
+      \item Size of array with nil element is not defined.
+      \item Everything that is not nil or false — true (0 too).
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Most important!}
+
+\begin{frame}
+  \centering When you code in Lua — code in Lua!
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Lua / LuaJIT place in your stack}
+
+\begin{frame}
+  First and foremost:
+
+  \begin{itemize}
+    \item User-configurable business-logic.
+    \item Code that would otherwise be written in C/C++/OCaml.
+  \end{itemize}
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{Our stack}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Frameworks to build webservices with Lua}
+
+\begin{frame}
+  Some of the popular ones:
+  \begin{itemize}
+    \item Kepler/WSAPI
+    \item OpenResty
+    \item Luvit
+  \end{itemize}
+
+  We have a "bicycle", built on WSAPI.
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{What web-problems are we solving with Lua?}
+
+\begin{frame}
+  \begin{itemize}
+    \item Browser and social games.
+    \item Ad networks.
+    \item Other web-services, mobile games etc.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Hardware}
+
+\begin{frame}
+  \begin{itemize}
+    \item Linode
+    \item Hetzner EX6
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{OS}
+
+\begin{frame}
+  \begin{itemize}
+    \item Xen XCP on top of Ubuntu Sever.
+    \item domU on Ubuntu Server:
+    \begin{itemize}
+      \item HTTP frontends (nginx).
+      \item HTTP backends (32-bit).
+      \item Workers (32-bit).
+      \item DB (Redis, MySQL).
+      \item Aux (Bind, nginx-based config-server, deployment, monitoring etc.).
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Backends}
+
+\begin{frame}
+  \begin{itemize}
+    \item nginx
+    \item spawn-fcgi + multiwatch
+    \item LuaJIT 2.0
+    \item FCGI/WSAPI
+    \item Application code
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Workers}
+
+\begin{frame}
+  \begin{itemize}
+    \item runit
+    \item LuaJIT 2.0
+    \item Application code
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{IPC}
+
+\begin{frame}
+  \begin{itemize}
+    \item ØMQ
+    \item Tasks:
+    \begin{itemize}
+      \item Replacement for broken signals.
+      \item In-process cache reset.
+      \item (Workers get tasks via Redis.)
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{System tuning}
+
+\begin{frame}
+  \begin{itemize}
+    \item OS
+    \begin{itemize}
+      \item \href{http://bit.ly/kernel-magic}{bit.ly/kernel-magic} (for frontends and backends)
+    \end{itemize}
+    \item Redis
+    \begin{itemize}
+      \item I/O Scheduler: noop on guests, deadline on host
+    \end{itemize}
+    \item nginx
+    \begin{itemize}
+      \item worker\_rlimit\_nofile
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{"DevOps"}
+
+\begin{frame}
+  \begin{itemize}
+    \item Deployment
+    \item High Availability
+    \item Monitoring
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Main libraries}
+
+\begin{frame}
+  \begin{itemize}
+    \item lua-nucleo, lua-aplicado (better — Penlight, telescope)
+    \item slnunicode
+    \item luatexts, luajson
+    \item luasocket, luaposix (better — ljsyscall)
+    \item WSAPI
+    \item lua-zmq
+    \item lua-hiredis (better — ljffi-hiredis)
+    \item luasql-mysql
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{DSL and code generation}
+
+\begin{frame}
+  \begin{itemize}
+    \item HTTP request handlers.
+    \begin{itemize}
+      \item Code (partially statically validated).
+      \item Docs.
+      \item (Planned) Smoke-tests.
+    \end{itemize}
+    \item SQL schema.
+    \begin{itemize}
+      \item "ORM" wrapper code.
+      \item DB schema patches.
+      \item Auto-backoffice.
+      \item Docs.
+    \end{itemize}
+    \item \href{http://bit.ly/lua-dsl-talk}{bit.ly/lua-dsl-talk}
+    \item Common parts of a project are generated from text templates.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Performance}
+
+\begin{frame}
+  \begin{itemize}
+    \item About 160M synthetic hits per day \emph{per EX6-class server} in ad networks.
+    \item About 8K simultaneous active users \emph{per EX6-class server} in online games.
+  \end{itemize}
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{Pitfalls}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{What did we encounter?}
+
+\begin{frame}
+  In main:
+
+  \begin{itemize}
+    \item Couple "mysterious" problems, due to bugs in early LuaJIT2 betas (all fixed by now).
+    \item Problems, caused by two versions of the same LuaRocks package installed in the system.
+    \item Exploding Redis.
+    \item Lousy Hetzner HDD reliability.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Diagnostics, debugging and monitoring}
+
+\begin{frame}
+  \begin{itemize}
+    % TODO!!!
+    \item Partial static code validation.
+    \item Runtime validation.
+    \item Autotests.
+    \item GC tuning and monitoring.
+    \item Monitoring for request times, memory usage etc.
+    \item Debugging with logs.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\subsection*{Main unsolved problems}
+
+\begin{frame}
+  \begin{itemize}
+    \item Long polling / Comet.
+    \item OS signal handling.
+    \item More efficient CPU usage with HTTP handlers.
+    \item LuaRocks:
+    \begin{itemize}
+      \item Can install two versions of the same rock in the system.
+      \item Can't upgrade a package.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{Next generation stack}
+
+%% -------------------------------------------------------------------------- %%
+
+% TODO: Hack!
+\section*{}
+\subsection*{Next generation stack}
+
+% TODO: Rethink this
+\begin{frame}
+  \begin{itemize}
+    \item Unblocking API with coroutines, no callback. Get inspired by, or adapt OpenResty.
+    \item Complete transition to LuaJIT FFI.
+    \item Consider dropping LuaRocks.
+    \item Drop FCGI, move to epoll and lua-http-parser.
+    \item Simplify the architecture as much as possible. Drop the configuration server. More code generation!
+    \item New DSL design.
+  \end{itemize}
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{Want to know more?}
+
+\begin{frame}
+  \begin{center}
+  \begin{minipage}{0.6\linewidth}
+  \begin{itemize}
+    \item[Official Site] \href{http://lua.org}{lua.org}, \href{http://luajit.org}{luajit.org}
+    \item[Wiki] lua-users.org/wiki, \href{http://wiki.luajit.org}{wiki.luajit.org}
+    \item[Mailing Lists] \href{http://lua.org/lua-l.html}{lua.org/lua-l.html}, \href{http://luajit.org/list.html}{luajit.org/list.html}
+    \item[StackOverflow] \href{http://stackoverflow.com/questions/tagged/Lua}{stackoverflow.com/questions/tagged/Lua}
+    \item[IRC] \#lua at \href{http://irc.freenode.net}{irc.freenode.net}
+  \end{itemize}
+  \end{minipage}
+  \end{center}
+\end{frame}
+
+%% ========================================================================== %%
+
+\section*{Questions?}
+
+\begin{frame}
+
+\begin{center}
+\Huge{@agladysh}
+\end{center}
+
+\begin{center}
+\Large{ag@logiceditor.com}
+\end{center}
+
+\begin{center}
+\href{http://meetup.com/Lua-in-Moscow}{meetup.com/Lua-in-Moscow}
+\end{center}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\end{document}
