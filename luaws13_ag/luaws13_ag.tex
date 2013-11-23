@@ -3,6 +3,7 @@
 \usepackage{minted}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
+\usepackage[T1]{fontenc}
 
 \mode<presentation>{
   \usetheme{default}
@@ -29,18 +30,17 @@
 
 \begin{frame}{Outline}
 
-\frametitle
-
 \tableofcontents
 
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
+
 \section{Introduction}
 
-\begin{frame}{Alexander Gladysh}
+%% -------------------------------------------------------------------------- %%
 
-\frametitle
+\begin{frame}{Alexander Gladysh}
 
 \begin{itemize}
 \item CTO, co-founder at LogicEditor
@@ -66,6 +66,10 @@
 \end{itemize}
 
 \end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\section{The Problem}
 
 %% -------------------------------------------------------------------------- %%
 
@@ -134,6 +138,14 @@ For commercial programming you'll also need, at least:
 %% -------------------------------------------------------------------------- %%
 
 \section{Classic third-party alternatives}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}
+
+\Huge{Classic third-party alternatives}
+
+\end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
@@ -236,7 +248,7 @@ Only an idea was re-used and improved between generations.
 
 \begin{frame}{Browser MMO magic system editor}
 
-\includegraphics[height=.8\textheight]{browser}
+\includegraphics[height=.8\textheight]{magic}
 
 \end{frame}
 
@@ -320,6 +332,7 @@ Toolkit, from the data "schema".
 
 \begin{itemize}
 \item Embedded Lua DSL (see my talk on Lua WS'11).
+\url{http://bit.ly/lua-dsl-talk}
 \item Describes how to:
 \begin{itemize}
  \item check data validity,
@@ -335,28 +348,18 @@ Toolkit, from the data "schema".
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Schema Example}[fragile]
+\begin{frame}[fragile]{Schema Example, I}
 
 See also: \url{http://bit.ly/le7-schema}
 
 \begin{minted}{lua}
-lang:root "lua.print-string";
-
-lang:func "lua.print-string" {
-  "lua.string.value";
-  render:js [[Print string]] {
-    [[Print: \${1}]];
-  };
-  render:lua {
-    [[print(\${1})]];
-  };
-}
+lang:root "lua.print-string"
 
 lang:value "lua.string.value" {
   data_type = "string";
   default = "Hallo, world!";
-  render:js [[String Value]] { [[\${1}]] };
-  render:lua { [[\${1}]] };
+  render:js [[String Value]] { [[${1}]] };
+  render:lua { [[${1}]] };
 }
 \end{minted}
 
@@ -364,7 +367,26 @@ lang:value "lua.string.value" {
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Default Data}[fragile]
+\begin{frame}[fragile]{Schema Example, II}
+
+\begin{minted}{lua}
+lang:func "lua.print-string" {
+  "lua.string.value";
+  render:js [[Print string]] {
+    [[Print: ${1}]];
+  };
+  render:lua {
+    [[print(${1})]];
+  };
+}
+
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Default Data}
 
 \begin{minted}{lua}
 {
@@ -386,7 +408,7 @@ print("Hallo, world!")
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{UI for default data (simplified)}[fragile]
+\begin{frame}[fragile]{UI for default data (simplified)}
 
 \begin{minted}{lua}
 <div id="lua.print-string">
@@ -400,19 +422,19 @@ print("Hallo, world!")
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Extending string type}[fragile]
+\begin{frame}[fragile]{Extending string type}
 
 \begin{minted}{lua}
 lang:type "lua.string" {
   init = "lua.string.value";
-  render:js [[String]] { menu = [[S]]; [[\${1}]] };
-  render:lua { [[\${1}]] };
+  render:js [[String]] { menu = [[S]]; [[${1}]] };
+  render:lua { [[${1}]] };
 }
 
 lang:func "lua.string.reverse" {
   type = "lua.string";
-  render:js [[Reverse string]] { [[Reverse: \${1}]] };
-  render:lua { [[(\${1}):reverse()]] };
+  render:js [[Reverse string]] { [[Reverse: ${1}]] };
+  render:lua { [[(${1}):reverse()]] };
 }
 \end{minted}
 
@@ -420,7 +442,7 @@ lang:func "lua.string.reverse" {
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Print with multiple arguments}[fragile]
+\begin{frame}[fragile]{Print with multiple arguments}
 
 \begin{minted}{lua}
 lang:list "lua.print"
@@ -462,11 +484,11 @@ lang:list "lua.print"
 \begin{frame}{Machine-friendly schema}
 
 \begin{itemize}
-node:literal
-node:variant
-node:record
-node:value
-node:list
+\item node:literal
+\item node:variant
+\item node:record
+\item node:value
+\item node:list
 \end{itemize}
 
 \end{frame}
@@ -513,6 +535,8 @@ Several points to improve
 
 NB: We'll probably go for a control-flow diagram UI first, not text-based one (current text-based is cool enough).
 
+\end{frame}
+
 %% -------------------------------------------------------------------------- %%
 
 \begin{frame}{Problems with the current DSL}
@@ -548,7 +572,7 @@ NB: We'll probably go for a control-flow diagram UI first, not text-based one (c
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Early examples}[fragile]
+\begin{frame}[fragile]{Early examples}
 
 \url{http://bit.ly/le8-proto}
 
@@ -559,20 +583,20 @@ data:type "action" "print-var" "var-name"
 
 to:text "script" :T [[
 local _VARS = {}
-\${indent(concat(children))}
+${indent(concat(children))}
 ]]
 to:text "print-var" "var-name"
-  :T [[print(_VARS[\${quote:lua(node)}])]]
+  :T [[print(_VARS[${quote:lua(node)}])]]
 
 to:ui "print-var" "var-name"
-  :T [[Print: \${child(1)})]]
+  :T [[Print: ${child(1)})]]
 \end{minted}
 
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{An alternative approach to the Embedded DSLs in Lua}[fragile]
+\begin{frame}[fragile]{An alternative approach to the Embedded DSLs in Lua}
 
 \begin{minted}{lua}
 foo:bar "baz" { "quo" }
@@ -589,7 +613,7 @@ proxy = proxy({ "quo" })
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{The FSM}[fragile]
+\begin{frame}[fragile]{The FSM}
 
 \begin{minted}{lua}
 foo:bar "baz" { "quo" }
@@ -610,8 +634,7 @@ Early working prototype: \url{http://bit.ly/le-dsl-fsm}.
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Easier to code complex DSL constructs}[fragile]
-
+\begin{frame}[fragile]{Easier to code complex DSL constructs}
 
 \begin{minted}{lua}
 play:scene [[SCENE II]]
@@ -642,8 +665,6 @@ O, here they come.
 
 Alexander Gladysh,
 ag@logiceditor.com
-
-BTW, We're looking for early-adopters for the next generation of the toolkit (and, of course, for clients for the current one).
 
 \end{frame}
 
