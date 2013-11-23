@@ -56,10 +56,10 @@
 \begin{itemize}
 \item Use Lua to develop:
 \begin{itemize}
-\item Visual DSL toolkit (subject of this talk)
-\item Big-data analytics
-\item Intensive-load web-services
-\item In-browser and mobile games
+  \item Visual DSL toolkit (subject of this talk)
+  \item Big-data analytics
+  \item Intensive-load web-services
+  \item In-browser and mobile games
 \end{itemize}
 \item 600+ KLOC of private Lua codebase
 \item Some contributions to open-source Lua projects
@@ -72,10 +72,11 @@
 \begin{frame}{The Problem}
 
 \begin{itemize}
-\item Business-logic is highly volatile
-\item Programmers are not domain area specialists
-\item Specialist \leftrightarrow Manager \leftrightarrow Programmer loop is slow
-\item Specialist \leftrightarrow Programmer loop is expensive
+\item Business-logic is highly volatile.
+\item Programmers are not domain area specialists.
+\item Specialist $\Leftrightarrow$ Manager $\Leftrightarrow$ Programmer
+loop is slow.
+\item Specialist $\Leftrightarrow$ Programmer loop is expensive.
 \item Let specialists do the business-logic!
 \end{itemize}
 
@@ -336,24 +337,26 @@ Toolkit, from the data "schema".
 
 \begin{frame}{Schema Example}[fragile]
 
+See also: \url{http://bit.ly/le7-schema}
+
 \begin{minted}{lua}
 lang:root "lua.print-string";
 
 lang:func "lua.print-string" {
   "lua.string.value";
   render:js [[Print string]] {
-    [[Print: ${1}]];
+    [[Print: \${1}]];
   };
   render:lua {
-    [[print(${1})]];
+    [[print(\${1})]];
   };
 }
 
 lang:value "lua.string.value" {
   data_type = "string";
   default = "Hallo, world!";
-  render:js [[String Value]] { [[${1}]] };
-  render:lua { [[${1}]] };
+  render:js [[String Value]] { [[\${1}]] };
+  render:lua { [[\${1}]] };
 }
 \end{minted}
 
@@ -402,14 +405,14 @@ print("Hallo, world!")
 \begin{minted}{lua}
 lang:type "lua.string" {
   init = "lua.string.value";
-  render:js [[String]] { menu = [[S]]; [[${1}]] };
-  render:lua { [[${1}]] };
+  render:js [[String]] { menu = [[S]]; [[\${1}]] };
+  render:lua { [[\${1}]] };
 }
 
 lang:func "lua.string.reverse" {
   type = "lua.string";
-  render:js [[Reverse string]] { [[Reverse: ${1}]] };
-  render:lua { [[(${1}):reverse()]] };
+  render:js [[Reverse string]] { [[Reverse: \${1}]] };
+  render:lua { [[(\${1}):reverse()]] };
 }
 \end{minted}
 
@@ -420,7 +423,6 @@ lang:func "lua.string.reverse" {
 \begin{frame}{Print with multiple arguments}[fragile]
 
 \begin{minted}{lua}
-
 lang:list "lua.print"
 {
   "lua.string";
@@ -471,60 +473,164 @@ node:list
 
 %% -------------------------------------------------------------------------- %%
 
-Data-upgrade routines
+\begin{frame}{Data-upgrade routines}
 
-\item transformations between two given data versions
-\item are done in terms of node schema
-\item semi-automatical a stub is generated for many common simpler cases
-TODO what else about data upgrade?
+\begin{itemize}
+\item A set of hooks for data tree traversal.
+\item Transformations between two given data versions.
+\item In terms of node schema.
+\item Semi-automatic, template code is generated.
+\end{itemize}
 
-TODO what else about the present generation? Consult old talk
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{What else?}
+
+\begin{itemize}
+\item Scopes in the schema.
+\item External and internal data-sources.
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
 
 \section{The future}
+
+\begin{frame}{Several points of improvement}
 
 Current generation does its job well, but we see several ways on how to make it better
 
 Several points to improve
 
-+ Better, modern HTML (at the cost of support of IE6)
-+ Lua in browser for an optional server-less deployment
-+ Even more flexible and expressive Schema DSL
+\begin{itemize}
+\item Better, modern HTML (at the cost of support of IE6).
+\item Lua in browser for a server-less integration option.
+\item Even more flexible and expressive Schema DSL.
+\end{itemize}
 
-We'll probably go for a control-flow diagram UI first, not text-based one (current text-based is cool enough)
+NB: We'll probably go for a control-flow diagram UI first, not text-based one (current text-based is cool enough).
 
-Problems with the current Schema DSL
+%% -------------------------------------------------------------------------- %%
 
-TODO: Get from the pkle8 memo
+\begin{frame}{Problems with the current DSL}
 
-Solution
+\begin{itemize}
+\item One language for three separate concepts:
+\begin{itemize}
+  \item data tree structure,
+  \item editor UI,
+  \item final output.
+\end{itemize}
+\item Data tree structure gets a bit synthetic and convoluted at times.
+\item Should be easier to add alternative editor UIs.
+\end{itemize}
 
-+ Three separate sets of languages:
-+ Data format
-+ Render to output (per output format)
-+ Render to editor (per editor kind)
+\end{frame}
 
-+ CSS-like rules instead of pre-defined set of node types
+%% -------------------------------------------------------------------------- %%
 
-Examples
+\begin{frame}{Solution}
 
-TODO: Get from the pkle8 memo (make sure to use modern ones)
+\begin{itemize}
+\item Three separate sets of languages:
+\begin{itemize}
+  \item data tree format,
+  \item render to output (per output format),
+  \item render to editor (per editor kind).
+\end{itemize}
+\item CSS-like rules instead of pre-defined set of node types
+\end{itemize}
 
-Bonus: New approach to DSLs
+\end{frame}
 
-DSL as a Finite-state machine
+%% -------------------------------------------------------------------------- %%
 
-TODO get from the lua-dsl-fsm README, don't forget examples
+\begin{frame}{Early examples}[fragile]
+
+\url{http://bit.ly/le8-proto}
+
+\begin{minted}{lua}
+data:root "script"
+data:type "script" ("*", "action")
+data:type "action" "print-var" "var-name"
+
+to:text "script" :T [[
+local _VARS = {}
+\${indent(concat(children))}
+]]
+to:text "print-var" "var-name"
+  :T [[print(_VARS[\${quote:lua(node)}])]]
+
+to:ui "print-var" "var-name"
+  :T [[Print: \${child(1)})]]
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{An alternative approach to the Embedded DSLs in Lua}[fragile]
+
+\begin{minted}{lua}
+foo:bar "baz" { "quo" }
+\end{minted}
+
+\begin{minted}{lua}
+local proxy = foo
+proxy = proxy["bar"]
+proxy = proxy(foo, "baz")
+proxy = proxy({ "quo" })
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{The FSM}[fragile]
+
+\begin{minted}{lua}
+foo:bar "baz" { "quo" }
+\end{minted}
+
+If proxy is as a FSM, indexes and calls — state transitions.
+
+\begin{verbatim}
+INIT | index "bar" -> foo.bar
+       foo.bar | call -> foo.bar.name
+  foo.bar.name | call -> foo.bar.name.param
+FINAL <- foo.bar.name.param
+\end{verbatim}
+
+Early working prototype: \url{http://bit.ly/le-dsl-fsm}.
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Easier to code complex DSL constructs}[fragile]
 
 
+\begin{minted}{lua}
+play:scene [[SCENE II]]
+.location [[Another room in the castle.]]
+:enter "HAMLET"
+:remark "HAMLET" [[
+Safely stowed.
+]]
+:remark { "ROSENCRANTZ", "GILDERSTERN" }
+  .cue [[within]] [[
+Hamlet! Lord Hamlet!
+]]
+:remark "HAMLET" [[
+What noise? who calls on Hamlet?
+O, here they come.
+]]
+\end{minted}
 
-+ Interested in the current generation of the Toolkit or want to be an early adopter for the next one?
-
-Drop us a line:
-
-toolkit@logiceditor.com
-
-
-Links, +link to example on GH
+\end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
@@ -537,6 +643,8 @@ Links, +link to example on GH
 Alexander Gladysh,
 ag@logiceditor.com
 
+BTW, We're looking for early-adopters for the next generation of the toolkit (and, of course, for clients for the current one).
+
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
@@ -544,7 +652,3 @@ ag@logiceditor.com
 \end{document}
 
 %% -------------------------------------------------------------------------- %%
-
-TODO: Make sure all images are there.
-TODO: Validate all code
-TODO: Link to a working demo
