@@ -12,12 +12,14 @@
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{footline}[frame number]
 
+\newcommand{\comment}[1]{}
+
 %% -------------------------------------------------------------------------- %%
 
-\title{Ad-hoc big data analysis with Lua}
+\title{Ad-hoc Big-Data Analysis with Lua}
 \subtitle{And LuaJIT}
 \author{\includegraphics[height=.4\textheight]{logo}}
-\institute{Alexander Gladysh <ag@logiceditor.com>}
+\institute{Alexander Gladysh <ag@logiceditor.com>\newline@agladysh}
 \date{Lua Workshop 2015\\Stockholm}
 
 %% -------------------------------------------------------------------------- %%
@@ -49,13 +51,183 @@
 
 \end{frame}
 
+\comment{
+  Outline:
+
+  1. Introduction
+    Alexander Gladysh, CTO and co-owner of LogicEditor
+  2. The elephant
+    Define the problem. What is big data. Make small(er), more palatable, data
+    from the big one. If you're big, you have hadoop and whatnot.
+    If you're small, maybe you have google bigquery and analogs.
+
+    But if you're small and have some modest computing power of your own
+    and need to do some exploratory analysis, Lua to the rescue.
+    As usual, go minimalistic then either pick existing tool you need
+    or roll your own ecosystem.
+    The workflow is to massage data and then feed it to more powerful analytics
+    tool like R or even Excel.
+  3. What hardware? Lots of memory, fast hdd / ssd,
+  3. How data is stored.
+    Files, synched across filesystems.
+  4. Map-reduce, sort, join and friends (but you know them all)
+    See also AA's ticket about combiners.
+    Outline basic properties of the sorted data.
+  5. The tools and the pipeline
+    Some standard bash tools and LuaJIT (plain Lua would work too).
+    Traditional alternatives to Lua: awk, perl are less maintainable for
+    more complex scripts.
+    There are always a few bash tools that you missed that could do the job
+    better, faster etc. You can't know them all. I give you the basics.
+  6. Sort
+    + pre-sort stuff
+    + join / sort -m, comm
+    columns
+  7. Uniq
+  8. Grep
+  9. cut, awk
+  10. Lua.
+    + memory limit
+  11. Parallel
+  12. Compression
+    lxc for being fast
+    pigz etc. for compatibility
+    xz for size
+  13. pv
+    nifty diagnostics
+  14. What's next?
+    Hadoop
+    FFI
+  15. Questions?
+}
+
 %% -------------------------------------------------------------------------- %%
 
-\section{The Problem}
+\section{The Elephant}
 
 %% -------------------------------------------------------------------------- %%
 
 \begin{frame}{The Problem}
+
+\begin{itemize}
+\item You have a big dataset to analyze
+\item that makes casual analysis tools explode or be too slow
+\item and you don't have resources to set up and maintain
+      (or pay for) Hadoop, Google Big Query etc.
+\item but you have some processing power available.
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Goal}
+
+\begin{itemize}
+\item Pre-process the data so it can be handled by R or Excel or your favorite
+analytics tool (or Lua!).
+\item If the data is dynamic, then \textit{learn to} pre-process it
+      and build a data processing pipeline
+      (which is outside of the scope of this talk).
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{An approach}
+
+\begin{itemize}
+\item Use Lua!
+\item And (semi-)standard tools, available on Linux.
+\item Go minimalistic while exploring,
+\item Then move to an industrial solution that fits your newly understood
+      requirements
+\item Or roll your own ecosystem ;-)
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Start small!}
+
+\begin{itemize}
+\item Always run your scripts on small representative excerpts
+      from your datasets, not only while developing them locally,
+      but on actual data-processing nodes too.
+\item Saves time and helps you learn the bottlenecks.
+\item Sometimes large run still blows in your face though.
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Discipline!}
+
+\begin{itemize}
+\item Many moving parts, large turn-around times, hard to keep tabs.
+\item Keep journal: Write down what you run and what time it took.
+\item Store actual versions of your scripts in a source control system.
+\item Don't forget to sanity-check the results you get!
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{LuaJIT?}
+
+\begin{itemize}
+\item Up to a point:
+\item 2.1 helps to speed things up,
+\item FFI bogs down development speed.
+\item Go plain Lua first (run it with LuaJIT),
+\item then roll your own ecosystem as needed ;-)
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Hardware?}
+
+\begin{itemize}
+\item As usual, more is better: Cores, cache, memory speed and size,
+      HDD speeds, networking speeds...
+\item But even a modest VM (or several) can be helpful.
+\item Your fancy gaming laptop is good too ;-)
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{OS}
+
+\begin{itemize}
+\item Linux (Ubuntu) Server.
+\item Approach will, of course, work for other setups.
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Data layout}
+
+\begin{itemize}
+\item Ideally, have data copies on each processing node, using identical
+      layouts.
+\item Fast network should work too.
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Data format}
 
 \begin{itemize}
 \item TODO
@@ -65,7 +237,68 @@
 
 %% -------------------------------------------------------------------------- %%
 
-\section{Heavy-weights}
+\begin{frame}{The Tools}
+
+\begin{itemize}
+\item parallel
+\item sort, uniq, grep
+\item cut, join, comm
+\item pv
+\item compression utilities
+\item LuaJIT
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Why Lua?}
+
+Perl, AWK are traditional alternatives to Lua,
+but, if you're not very disciplined and experienced,
+they are much less maintenable.
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Pipeline}
+
+\begin{itemize}
+\item TODO
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Advice}
+
+\Large Pre-sort everything!
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Advice}
+
+\Large Monitor resource utilization
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Compression}
+
+\begin{itemize}
+\item gzip: default, bad
+\item lxc: fast, large files
+\item pigz: fast, parallelizable
+\item xz: good compression, slow
+\item be on lookout for new formats!
+\end{itemize}
+
+\end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
