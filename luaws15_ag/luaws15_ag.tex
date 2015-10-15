@@ -51,46 +51,6 @@
 
 \end{frame}
 
-\comment{
-
-  TODO:
-  -- Run time stats
-  -- Basics on work with sorted files
-  -- Sort tricks
-
-  4. Map-reduce, sort, join and friends (but you know them all)
-    See also AA's ticket about combiners.
-    Outline basic properties of the sorted data.
-
-  5. The tools and the pipeline
-    Some standard bash tools and LuaJIT (plain Lua would work too).
-    Traditional alternatives to Lua: awk, perl are less maintainable for
-    more complex scripts.
-    There are always a few bash tools that you missed that could do the job
-    better, faster etc. You can't know them all. I give you the basics.
-  6. Sort
-    + pre-sort stuff
-    + join / sort -m, comm
-    columns
-  7. Uniq
-  8. Grep
-  9. cut, awk
-  10. Lua.
-    + memory limit
-    + How the code looks like?
-  11. Parallel
-  12. Compression
-    lxc for being fast
-    pigz etc. for compatibility
-    xz for size
-  13. pv
-    nifty diagnostics
-  14. What's next?
-    Hadoop
-    FFI
-  15. Questions?
-}
-
 %% -------------------------------------------------------------------------- %%
 
 \section{The Problem}
@@ -343,7 +303,8 @@ Basically:
 \item You work with sorted data,
 \item mapping and reducing it line-by-line,
 \item in parallel where at all possible,
-\item while trying to use as much of available hardware resources as practical.
+\item while trying to use as much of available hardware resources as practical,
+\item and without running out of memory.
 \end{itemize}
 
 \end{frame}
