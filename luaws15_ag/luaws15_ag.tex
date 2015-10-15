@@ -57,6 +57,9 @@
   -- Sort slides
   -- Introduce sections
   -- Add examples
+  -- Run time stats
+  -- Basics on work with sorted files
+  -- Sort tricks
 
   Outline:
 
@@ -110,21 +113,25 @@
 
 %% -------------------------------------------------------------------------- %%
 
-\section{The Elephant}
+\section{The Problem}
 
 %% -------------------------------------------------------------------------- %%
 
 \begin{frame}{The Problem}
 
 \begin{itemize}
-\item You have a big dataset to analyze
-\item that makes casual analysis tools explode or be too slow
-\item and you don't have resources to set up and maintain
-      (or pay for) Hadoop, Google Big Query etc.
+\item You have a dataset to analyze,
+\item which is too large for "small-data" tools,
+\item and have no resources to setup and maintain (or pay for)
+      the Hadoop, Google Big Query etc.
 \item but you have some processing power available.
 \end{itemize}
 
 \end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\section{A Solution}
 
 %% -------------------------------------------------------------------------- %%
 
@@ -134,8 +141,7 @@
 \item Pre-process the data so it can be handled by R or Excel or your favorite
 analytics tool (or Lua!).
 \item If the data is dynamic, then \textit{learn to} pre-process it
-      and build a data processing pipeline
-      (which is outside of the scope of this talk).
+      and build a data processing pipeline.
 \end{itemize}
 
 \end{frame}
@@ -149,56 +155,38 @@ analytics tool (or Lua!).
 \item And (semi-)standard tools, available on Linux.
 \item Go minimalistic while exploring,
 \item Then move to an industrial solution that fits your newly understood
-      requirements
-\item Or roll your own ecosystem ;-)
+      requirements,
+\item Or roll your own ecosystem! ;-)
 \end{itemize}
 
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Start small!}
+\section{Assumptions}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}
+\huge Assumptions
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Data format}
 
 \begin{itemize}
-\item Always run your scripts on small representative excerpts
-      from your datasets, not only while developing them locally,
-      but on actual data-processing nodes too.
-\item Saves time and helps you learn the bottlenecks.
-\item Sometimes large run still blows in your face though.
+\item Plain text
+\item Column-based (csv-like), optionally with free-form data in the end
+\item Typical example: web-server log files
+\item TODO: Example
 \end{itemize}
 
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Discipline!}
-
-\begin{itemize}
-\item Many moving parts, large turn-around times, hard to keep tabs.
-\item Keep journal: Write down what you run and what time it took.
-\item Store actual versions of your scripts in a source control system.
-\item Don't forget to sanity-check the results you get!
-\end{itemize}
-
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{LuaJIT?}
-
-\begin{itemize}
-\item Up to a point:
-\item 2.1 helps to speed things up,
-\item FFI bogs down development speed.
-\item Go plain Lua first (run it with LuaJIT),
-\item then roll your own ecosystem as needed ;-)
-\end{itemize}
-
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Hardware?}
+\begin{frame}{Hardware}
 
 \begin{itemize}
 \item As usual, more is better: Cores, cache, memory speed and size,
@@ -222,18 +210,6 @@ analytics tool (or Lua!).
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Data format}
-
-\begin{itemize}
-\item Plain text
-\item Column-based (csv-like), optionally with free-form data in the end
-\item Typical example: web-server log files
-\end{itemize}
-
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
 \begin{frame}{Data layout}
 
 \begin{itemize}
@@ -243,6 +219,16 @@ analytics tool (or Lua!).
 \item TODO
 \end{itemize}
 
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\section{The Tools}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}
+\huge The Tools
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
@@ -262,6 +248,20 @@ analytics tool (or Lua!).
 
 %% -------------------------------------------------------------------------- %%
 
+\begin{frame}{LuaJIT?}
+
+Up to a point:
+\begin{itemize}
+\item 2.1 helps to speed things up,
+\item FFI bogs down development speed.
+\item Go plain Lua first (run it with LuaJIT),
+\item then roll your own ecosystem as needed ;-)
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
 \begin{frame}{Parallel}
 
 \begin{itemize}
@@ -269,42 +269,6 @@ analytics tool (or Lua!).
 \item can run your jobs in parallel on a single machine
 \item or on a "cluster"
 \end{itemize}
-
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Sort}
-
-\begin{itemize}
-\item Sorted files are the key to your task
-\end{itemize}
-
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Why Lua?}
-
-Perl, AWK are traditional alternatives to Lua,
-but, if you're not very disciplined and experienced,
-they are much less maintainable.
-
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Advice}
-
-\Large Pre-sort everything!
-
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Advice}
-
-\Large Monitor resource utilization at run-time.
 
 \end{frame}
 
@@ -325,10 +289,20 @@ they are much less maintainable.
 
 %% -------------------------------------------------------------------------- %%
 
+\section{Examples}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}
+\huge Examples
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
 \begin{frame}[fragile]{Bash script example}
 
 \begin{minted}{bash}
-time pv /path/to/uid-time-url-post.gz\
+time pv /path/to/uid-time-url-post.gz \
 | pigz -cdp 4 \
 | cut -d$'\t' -f 1,3 \
 | parallel --gnu --progress -P 10 --pipe --block=16M \
@@ -416,6 +390,54 @@ end
 
 flush()
 \end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\section{Notes}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}
+\huge Notes and Remarks
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Why Lua?}
+
+Perl, AWK are traditional alternatives to Lua,
+but, if you're not very disciplined and experienced,
+they are much less maintainable.
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Start small!}
+
+\begin{itemize}
+\item Always run your scripts on small representative excerpts
+      from your datasets, not only while developing them locally,
+      but on actual data-processing nodes too.
+\item Saves time and helps you learn the bottlenecks.
+\item Sometimes large run still blows in your face though:
+\item Monitor resource utilization at run-time.
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Discipline!}
+
+\begin{itemize}
+\item Many moving parts, large turn-around times, hard to keep tabs.
+\item Keep journal: Write down what you run and what time it took.
+\item Store actual versions of your scripts in a source control system.
+\item Don't forget to sanity-check the results you get!
+\end{itemize}
 
 \end{frame}
 
