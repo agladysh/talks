@@ -52,6 +52,12 @@
 \end{frame}
 
 \comment{
+
+  TODO:
+  -- Sort slides
+  -- Introduce sections
+  -- Add examples
+
   Outline:
 
   1. Introduction
@@ -88,6 +94,7 @@
   9. cut, awk
   10. Lua.
     + memory limit
+    + How the code looks like?
   11. Parallel
   12. Compression
     lxc for being fast
@@ -215,21 +222,24 @@ analytics tool (or Lua!).
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Data layout}
+\begin{frame}{Data format}
 
 \begin{itemize}
-\item Ideally, have data copies on each processing node, using identical
-      layouts.
-\item Fast network should work too.
+\item Plain text
+\item Column-based (csv-like), optionally with free-form data in the end
+\item Typical example: web-server log files
 \end{itemize}
 
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Data format}
+\begin{frame}{Data layout}
 
 \begin{itemize}
+\item Ideally, have data copies on each processing node, using identical
+      layouts. Fast network should work too.
+\item Sort!
 \item TODO
 \end{itemize}
 
@@ -252,21 +262,33 @@ analytics tool (or Lua!).
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Why Lua?}
+\begin{frame}{Parallel}
 
-Perl, AWK are traditional alternatives to Lua,
-but, if you're not very disciplined and experienced,
-they are much less maintenable.
+\begin{itemize}
+\item xargs for parallel computation
+\item can run your jobs in parallel on a single machine
+\item or on a "cluster"
+\end{itemize}
 
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Pipeline}
+\begin{frame}{Sort}
 
 \begin{itemize}
-\item TODO
+\item Sorted files are the key to your task
 \end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Why Lua?}
+
+Perl, AWK are traditional alternatives to Lua,
+but, if you're not very disciplined and experienced,
+they are much less maintainable.
 
 \end{frame}
 
@@ -282,7 +304,7 @@ they are much less maintenable.
 
 \begin{frame}{Advice}
 
-\Large Monitor resource utilization
+\Large Monitor resource utilization at run-time.
 
 \end{frame}
 
@@ -295,6 +317,7 @@ they are much less maintenable.
 \item lxc: fast, large files
 \item pigz: fast, parallelizable
 \item xz: good compression, slow
+\item ...and many more,
 \item be on lookout for new formats!
 \end{itemize}
 
@@ -302,18 +325,96 @@ they are much less maintenable.
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}
+\begin{frame}[fragile]{Bash script example}
 
-\Huge{Heavy-weights}
+\begin{minted}{bash}
+time pv /path/to/uid-time-url-post.gz\
+| pigz -cdp 4 \
+| cut -d$'\t' -f 1,3 \
+| parallel --gnu --progress -P 10 --pipe --block=16M \
+  $(cat <<"EOF"
+    luajit ~me/url-to-normalized-domain.lua
+EOF
+  ) \
+| LC_ALL=C sort -u -t$'\t' -k2 --parallel 6 -S20% \
+| luajit ~me/reduce-key-counter.lua \
+| LC_ALL=C sort -t$'\t' -nrk2 --parallel 6 -S20% \
+| pigz -cp4 >/path/to/domain-uniqs_count-merged.gz
+\end{minted}
 
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{TODO Code}
+\begin{frame}[fragile]{Lua Script Example: url-to-normalized-domain.lua}
+
+\begin{minted}{bash}
+for l in io.lines() do
+  local key, value = l:match("^([^\t]+)\t(.*)")
+  if value then
+    value = url_to_normalized_domain(value)
+  end
+  if key and value then
+    io.write(key, "\t", value, "\n")
+  end
+end
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Lua Script Example: reduce-key-counter.lua 1/3}
 
 \begin{minted}{lua}
-TODO
+-- Assumes input sorted by VALUE
+-- a  foo --> foo  3
+-- a  foo     bar  2
+-- b  foo     quo  1
+-- a  bar
+-- c  bar
+-- d  quo
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Lua Script Example: reduce-key-counter.lua 2/3}
+
+\begin{minted}{lua}
+local last_key = nil, accum = 0
+
+local flush = function(key)
+  if last_key then
+    io.write(last_key, "\t", accum, "\n")
+  end
+  accum = 0
+  last_key = key -- may be nil
+end
+\end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Lua Script Example: reduce-key-counter.lua 3/3}
+
+\begin{minted}{lua}
+for l in io.lines() do
+  -- Note reverse order!
+  local value, key = l:match("^(.-)\t(.*)$")
+  assert(key and value)
+
+  if key ~= last_key then
+    flush(key)
+    collectgarbage("step")
+  end
+
+  accum = accum + 1
+end
+
+flush()
 \end{minted}
 
 \end{frame}
