@@ -54,34 +54,14 @@
 \comment{
 
   TODO:
-  -- Sort slides
-  -- Introduce sections
-  -- Add examples
   -- Run time stats
   -- Basics on work with sorted files
   -- Sort tricks
 
-  Outline:
-
-  1. Introduction
-    Alexander Gladysh, CTO and co-owner of LogicEditor
-  2. The elephant
-    Define the problem. What is big data. Make small(er), more palatable, data
-    from the big one. If you're big, you have hadoop and whatnot.
-    If you're small, maybe you have google bigquery and analogs.
-
-    But if you're small and have some modest computing power of your own
-    and need to do some exploratory analysis, Lua to the rescue.
-    As usual, go minimalistic then either pick existing tool you need
-    or roll your own ecosystem.
-    The workflow is to massage data and then feed it to more powerful analytics
-    tool like R or even Excel.
-  3. What hardware? Lots of memory, fast hdd / ssd,
-  3. How data is stored.
-    Files, synched across filesystems.
   4. Map-reduce, sort, join and friends (but you know them all)
     See also AA's ticket about combiners.
     Outline basic properties of the sorted data.
+
   5. The tools and the pipeline
     Some standard bash tools and LuaJIT (plain Lua would work too).
     Traditional alternatives to Lua: awk, perl are less maintainable for
@@ -153,7 +133,7 @@ analytics tool (or Lua!).
 \begin{itemize}
 \item Use Lua!
 \item And (semi-)standard tools, available on Linux.
-\item Go minimalistic while exploring,
+\item Go minimalistic while exploring, avoid frameworks,
 \item Then move to an industrial solution that fits your newly understood
       requirements,
 \item Or roll your own ecosystem! ;-)
@@ -244,72 +224,6 @@ gamma.example.com	1
       layouts.
 \item Fast network should work too.
 \item Use of network filesystem of one kind or another are not a requirement.
-\end{itemize}
-
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\section{The Tools}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}
-\huge The Tools
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{The Tools}
-
-\begin{itemize}
-\item parallel
-\item sort, uniq, grep
-\item cut, join, comm
-\item pv
-\item compression utilities
-\item LuaJIT
-\end{itemize}
-
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{LuaJIT?}
-
-Up to a point:
-\begin{itemize}
-\item 2.1 helps to speed things up,
-\item FFI bogs down development speed.
-\item Go plain Lua first (run it with LuaJIT),
-\item then roll your own ecosystem as needed ;-)
-\end{itemize}
-
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Parallel}
-
-\begin{itemize}
-\item xargs for parallel computation
-\item can run your jobs in parallel on a single machine
-\item or on a "cluster"
-\end{itemize}
-
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Compression}
-
-\begin{itemize}
-\item gzip: default, bad
-\item lxc: fast, large files
-\item pigz: fast, parallelizable
-\item xz: good compression, slow
-\item ...and many more,
-\item be on lookout for new formats!
 \end{itemize}
 
 \end{frame}
@@ -417,6 +331,114 @@ end
 
 flush()
 \end{minted}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Tying it all together}
+
+Basically:
+\begin{itemize}
+\item You work with sorted data,
+\item mapping and reducing it line-by-line,
+\item in parallel where at all possible,
+\item while trying to use as much of available hardware resources as practical.
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\section{The Tools}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}
+\huge The Tools
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{The Tools}
+
+\begin{itemize}
+\item parallel
+\item sort, uniq, grep
+\item cut, join, comm
+\item pv
+\item compression utilities
+\item LuaJIT
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{LuaJIT?}
+
+Up to a point:
+\begin{itemize}
+\item 2.1 helps to speed things up,
+\item FFI bogs down development speed.
+\item Go plain Lua first (run it with LuaJIT),
+\item then roll your own ecosystem as needed ;-)
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Parallel}
+
+\begin{itemize}
+\item xargs for parallel computation
+\item can run your jobs in parallel on a single machine
+\item or on a "cluster"
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Compression}
+
+\begin{itemize}
+\item gzip: default, bad
+\item lxc: fast, large files
+\item pigz: fast, parallelizable
+\item xz: good compression, slow
+\item ...and many more,
+\item be on lookout for new formats!
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{GNU sort tricks}
+
+\begin{minted}{bash}
+LC_ALL=C \
+sort -t$'\t' --parallel 4 -S60% \
+-k3,3nr -k2,2  -k1,1nr
+\end{minted}
+
+\begin{itemize}
+\item Disable locale.
+\item Specify delimiter.
+\item Note that parallel x4 with 60\% memory
+      will eat 0.6 * log(4) = 120\% of memory.
+\item When doing multi-key sort, specify parameters after key number.
+\end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{grep}
+
+http://stackoverflow.com/questions/9066609/fastest-possible-grep
 
 \end{frame}
 
