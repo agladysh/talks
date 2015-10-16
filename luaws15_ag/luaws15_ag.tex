@@ -88,7 +88,7 @@ analytics tool (or Lua!).
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{An approach}
+\begin{frame}{An Approach}
 
 \begin{itemize}
 \item Use Lua!
@@ -113,7 +113,7 @@ analytics tool (or Lua!).
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Data format}
+\begin{frame}{Data Format}
 
 \begin{itemize}
 \item Plain text
@@ -125,12 +125,12 @@ analytics tool (or Lua!).
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{Data Format Example: raw data}
+\begin{frame}[fragile]{Data Format Example: Raw Data}
 
 \begin{minted}{text}
 2015/10/15 16:35:30 [info] 14171#0: *901195
 [lua] index:14: 95c1c06e626b47dfc705f8ee6695091a
-109.74.197.145 *.example.net
+109.74.197.145 *.example.com
 GET 123456.gif?q=0&step=0&ref= HTTP/1.1 example.com
 \end{minted}
 \textit{NB: This is a single, tab-separated line from a time-sorted file.}
@@ -139,7 +139,7 @@ GET 123456.gif?q=0&step=0&ref= HTTP/1.1 example.com
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{Data Format Example: intermediate data}
+\begin{frame}[fragile]{Data Format Example: Intermediate Data}
 
 \begin{minted}{text}
 alpha.example.com	5
@@ -182,7 +182,6 @@ gamma.example.com	1
 \item Ideally, have data copies on each processing node, using identical
       layouts.
 \item Fast network should work too.
-\item Use of network filesystem of one kind or another are not a requirement.
 \end{itemize}
 
 \end{frame}
@@ -199,7 +198,7 @@ gamma.example.com	1
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{Bash script example}
+\begin{frame}[fragile]{Bash Script Example}
 
 \begin{minted}{bash}
 time pv /path/to/uid-time-url-post.gz \
@@ -295,7 +294,7 @@ flush()
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Tying it all together}
+\begin{frame}{Tying It All Together}
 
 Basically:
 \begin{itemize}
@@ -376,7 +375,7 @@ Up to a point:
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{GNU sort tricks}
+\begin{frame}[fragile]{GNU sort Tricks}
 
 \begin{minted}{bash}
 LC_ALL=C \
@@ -424,7 +423,7 @@ they are much less maintainable.
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Start small!}
+\begin{frame}{Start Small!}
 
 \begin{itemize}
 \item Always run your scripts on small representative excerpts
