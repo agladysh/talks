@@ -5,3 +5,5 @@
 *.snm
 *.toc
 *.vrb
+*.pyg
+.DS_Store
