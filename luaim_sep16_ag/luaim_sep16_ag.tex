@@ -1,10 +1,15 @@
-\documentclass[handout]{beamer}
+\documentclass[aspectratio=169,handout,bigger]{beamer}
 
 \usepackage{minted}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage[T1,T2A]{fontenc}
 \usepackage[american,russian]{babel}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,chains,calc,fit,matrix}
+\tikzstyle{line}=[draw]
+\tikzstyle{arrow}=[draw]
 
 %% -------------------------------------------------------------------------- %%
 
@@ -32,37 +37,26 @@
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{План}
-
-\tableofcontents
-
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
 \section{Задача}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Что такое профессиональные приложения?}
+\begin{frame}{Профессиональные приложения}
+
+Профессиональное приложение:
+
+\begin{itemize}
+\item Для профессионалов, глубоко владеющих предметной областью
+\item Которые в большинстве своём не айтишники
+\end{itemize}
+
+Примеры:
 
 \begin{itemize}
 \item CAD'ы
 \item Приложения для управления бизнес-логикой "больших" систем
-      (например, в авиации)
 \item Бэкофисы сложных проектов
 \item и так далее
-\end{itemize}
-
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Кто пользователи?}
-
-\begin{itemize}
-\item Профессионалы, глубоко владеющие предметной областью
-\item Не IT-шники
 \end{itemize}
 
 \end{frame}
@@ -72,19 +66,68 @@
 \begin{frame}{Конкретика}
 
 \begin{itemize}
-\item ПО для гражданской авиации
-\item Глубочайшая предметная область
+\item ТАИС разрабатывает профессиональное ПО для гражданской авиации
+\item Глубокая и обширная предметная область с длинной историей
+\item Требует профессионального обучения пользователей
 \end{itemize}
 
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Архитектура}
+\begin{frame}{Пользовательский интерфейс предыдущего поколения}
 
-\begin{itemize}
-\item TODO: Диаграмма. Клиент -- вершина айсберга.
-\end{itemize}
+\includegraphics[width=.90\textwidth]{temul}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Перспективный пользовательский интерфейс}
+
+\includegraphics[width=.90\textwidth]{twt}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Многослойная система}
+
+\begin{tikzpicture}
+
+\node (client) {Клиент};
+\node (server) [below of=client] {REST-сервер};
+\node (sig) [below of=server] {Легаси SOAP-процессор};
+\node (crs) [below of=sig] {CRS};
+\node (external) [below of=crs] {Внешние системы};
+
+\draw [arrow] (client) -> (server);
+\draw [arrow] (server) -> (sig);
+\draw [arrow] (sig) -> (crs);
+\draw [arrow] (crs) -> (external);
+
+\end{tikzpicture}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Поток сообщений}
+
+\begin{tikzpicture}
+
+\node (command) {Пользовательская команда};
+\node (rpcrequest) [below of=command] {Запрос REST};
+\node (soaprequest) [below of=rpcrequest] {Запрос SOAP};
+\node (etc) [below of=soaprequest] {...};
+\node (external) [below of=etc] {Запросы ко внешним системам};
+
+\draw [arrow] (command) -> (rpcrequest);
+\draw [arrow] (rpcrequest) -> (soaprequest);
+\draw [arrow] (soaprequest) -> (etc);
+\draw [arrow] (etc) -> (external);
+
+\end{tikzpicture}
 
 \end{frame}
 
@@ -94,7 +137,7 @@
 
 \begin{itemize}
 \item Автоматизация редких но сложных операций пользователя-эксперта
-\item В дальнейшем --- более высокоуровневое API для более частых команд
+\item В дальнейшем --- удобное API для более широкого круга пользователей
 \end{itemize}
 
 \end{frame}
@@ -108,7 +151,9 @@
 \begin{frame}{Почему макросы на клиенте?}
 
 \begin{itemize}
-\item TODO
+\item Запускать код пользователя на сервере — головная боль
+\item Особенно если уже есть система пользовательских команд
+\item Даже если её нет — у вас же есть серверное HTTP-API, правда?
 \end{itemize}
 
 \end{frame}
@@ -118,10 +163,35 @@
 \begin{frame}{Почему Lua?}
 
 \begin{itemize}
-\item TODO
-\item Изоляция интерфейса
-\item Лёгкость в освоении
+\item JavaScript тяжело изолировать от "кишок" проекта
+\item Lua легко изолировать
+\item Сам факт использования другого языка делает дизайн API чище
+\item Lua легче освоить непрограммистами
 \end{itemize}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Внешний вид: редактор скриптов}
+
+\includegraphics[width=.90\textwidth]{scripts}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Внешний вид: команда}
+
+\includegraphics[width=.90\textwidth]{command}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Внешний вид: результат выполнения}
+
+\includegraphics[width=.90\textwidth]{result}
 
 \end{frame}
 
@@ -130,30 +200,51 @@
 \begin{frame}{Lua в браузере: варианты}
 
 \begin{itemize}
-\item TODO
-\item Изоляция интерфейса
-\item Лёгкость в освоении
+\item lua.vm.js
+\item moonshine.js
+\item lua5.1.js
+\item starlight
+\item ... и многие другие.
+\end{itemize}
+
+См. также: Sailor MVC.
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Наш стек}
+
+\begin{itemize}
+\item lua.vm.js
+\item Маленькая самописная библиотека для VFS
+\item ACE (brace)
+\item webpack
 \end{itemize}
 
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Решение: стек}
+\begin{frame}[fragile]{Немного кода}
 
-\begin{itemize}
-\item TODO
-\end{itemize}
+\begin{minted}{javascript}
+var LuaVM = require('lua.vm.js');
 
-\end{frame}
+var execute = function(code) { return this.lua_.execute(code); };
+var provideModule = function(name, value) {
+  this.lua_._G.get("package").get("loaded").set(name, value);
+};
 
-%% -------------------------------------------------------------------------- %%
+var Vm = function() { this.lua_ = new LuaVM.Lua.State(); };
 
-\begin{frame}{Решение: внешний вид}
-
-\begin{itemize}
-\item TODO
-\end{itemize}
+Vm.prototype = {
+  execute: execute,
+  provideModule: provideModule,
+  constructor: Vm
+};
+module.exports = Vm;
+\end{minted}
 
 \end{frame}
 
@@ -162,7 +253,8 @@
 \begin{frame}{Что дальше?}
 
 \begin{itemize}
-\item TODO
+\item Технически — Lua в браузере отлично работает и выполняет свои задачи.
+\item Главное — это удобство использования, а это уже вопрос дизайна API.
 \end{itemize}
 
 \end{frame}
