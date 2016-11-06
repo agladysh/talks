@@ -4,4 +4,4 @@
 # sudo port install texlive-lang-cyrillic
 # sudo port install texlive-latex-extra
 # sudo port install texlive-fonts-recommended
-xelatex highload2016_ag.tex
+xelatex -shell-escape highload2016_ag.tex

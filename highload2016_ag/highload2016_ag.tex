@@ -20,6 +20,11 @@
     \renewcommand{\ULthickness}{.4pt}% Resetting to ulem default
 }
 
+\usepackage{minted}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,chains,calc,fit,matrix}
+
 %% -------------------------------------------------------------------------- %%
 
 \usepackage{polyglossia}
@@ -430,58 +435,115 @@
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{docker: архитектура одного прототипа (схема с редисом, nginx)}
-  \begin{itemize}
-    \item TODO
-  \end{itemize}
+\begin{frame}{Docker на машине разработчика}
+
+\begin{center}
+\begin{tikzpicture}
+  every join/.style={line},    % Default linetype for connecting boxes
+  scale=1, transform shape
+]
+
+\tikzset{
+  basebase/.style={
+    align=center, minimum height=2em, minimum width=9em, color=chart11,
+    inner sep=.5em, node distance=3em and 11em
+  },
+  rect/.style={
+    basebase, draw, on grid
+  },
+  coord/.style={coordinate},
+  line/.style={->, draw, chart11},
+}
+
+\node[rect, rounded corners]                     (client)    {Клиент};
+\node[rect, rounded corners, below of=client]    (docker)    {localhost:8080};
+\node[rect, below of=docker]    (openresty) {OpenResty};
+\node[rect, below of=openresty] (redis)     {Redis};
+
+\draw [line] (client)    -- (docker);
+\draw [line] (docker)    -- (openresty);
+\draw [line] (openresty) -- (redis);
+
+\end{tikzpicture}
+\end{center}
+
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{docker: базовые образы redis, openresty/openresty}
-  \begin{itemize}
-    \item TODO
-  \end{itemize}
+\begin{frame}[fragile]{docker-compose.yml для разработки: Redis}
+\begin{minted}{yaml}
+version: "2"
+services:
+  redis:
+    image: redis
+    volumes:
+      - ./redis:/data
+    command: redis-server --appendonly yes
+  openresty: <...>
+\end{minted}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{docker: dockerfiles}
-  \begin{itemize}
-    \item TODO
-  \end{itemize}
+\begin{frame}[fragile]{OpenResty: интересные места nginx.conf (в сокращении)}
+\begin{minted}{nginx}
+error_log logs/error.log notice;
+http {
+  include resolvers.conf;
+  lua_package_path "$prefix/lualib/?.lua;;";
+  lua_code_cache off; # TODO: Enable on production!
+  server {
+    listen 8080;
+    include mime.types;
+    default_type application/json;
+    location / { index index.html; root static/; }
+    location = /api/v1/ { content_by_lua_file 'api/index.lua'; }
+  }
+}
+\end{minted}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{docker: nginx config, трюки}
-  \begin{itemize}
-    \item TODO
-  \end{itemize}
+\begin{frame}[fragile]{OpenResty: Dockerfile}
+\begin{minted}{docker}
+FROM openresty/openresty
+COPY bin/entrypoint.sh /usr/local/bin/openresty-entrypoint.sh
+COPY nginx/conf /usr/local/openresty/nginx/conf
+COPY nginx/lualib /usr/loca/openresty/nginx/lualib
+COPY nginx/lua /usr/loca/openresty/nginx/lua
+COPY nginx/static /usr/loca/openresty/nginx/static
+ENTRYPOINT /usr/local/bin/openresty-entrypoint.sh
+\end{minted}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{docker: nginx config, трюки: lua code cache, routers}
-  \begin{itemize}
-    \item TODO
-  \end{itemize}
+\begin{frame}[fragile]{OpenResty: entrypoint.sh}
+\begin{minted}{bash}
+#!/bin/sh
+grep nameserver /etc/resolv.conf \
+  | awk '{print  "resolver " $2 ";"}' \
+  > /usr/local/openresty/nginx/conf/resolvers.conf
+/usr/local/openresty/bin/openresty -g 'daemon off;' "$@"
+\end{minted}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{docker-compose: больше одного прототипа}
-  \begin{itemize}
-    \item TODO
-  \end{itemize}
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{docker-compose: ymls; довольно про сисадминство}
-  \begin{itemize}
-    \item TODO
-  \end{itemize}
+\begin{frame}[fragile]{docker-compose.yml для разработки: OpenResty}
+\begin{minted}{yaml}
+  <...>
+  openresty:
+    build: .
+    volumes:
+      - ./nginx/lualib:/usr/local/openresty/nginx/lualib:ro
+      - ./nginx/api:/usr/local/openresty/nginx/api:ro
+      - ./nginx/static:/usr/local/openresty/nginx/static:ro
+      links:
+        - redis
+\end{minted}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
