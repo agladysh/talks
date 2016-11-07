@@ -627,18 +627,18 @@ grep nameserver /etc/resolv.conf \
 \begin{minted}{lua}
 {
   id = 'proto.mob.collectable';
-  chrs = { 'respawn_dt' = 10 * 60 };
+  chrs = { respawn_dt = 10 * 60 };
   actions = { 'mob.collect' };
 };
 {
   id = 'proto.mob.toad.green';
   proto_id = 'proto.mob.collectable';
+  chrs = { escape_chance = 0.25 };
 };
 {
   id = 'fa2eb7bca46c11e6be447831c1cebc82';
   proto_id = 'proto.mob.toad.green';
   geo = { lat = 55.7558, lon = 37.6173 };
-  chrs = { collect_chance = 0.5 };
 };
 \end{minted}
 \end{frame}
@@ -650,14 +650,14 @@ grep nameserver /etc/resolv.conf \
 ACTIONS['mob.collect'] = function(target, initiator)
   if
     math.random() * initiator.chrs.collect_skill >
-    target.chrs.collect_chance
+    target.chrs.escape_chance
   then
     -- Inc number of catches for this mob type
-    go_inc_chrs(initiator.id, target.proto_id, 1)
+    go_inc_chr(initiator.id, target.proto_id, 1)
     go_schedule_action_initiation( -- Schedule respawn
       target.chrs.respawn_dt, 'mob.spawn',
       { proto_id = target.proto_id, pos = target.pos },
-      initiator.id,
+      initiator.id
     )
     go_remove(target.id) -- Mob is caught, remove
   end
@@ -709,7 +709,7 @@ redis:zremrangebyscore('da', '-inf', timestamp)
   id = 'proto.item.admin-hat';
   proto_id = 'proto.item.wearable';
   grants = { 'user.admin' };
-  chrs = { 'collect_skill' = 0.25 };
+  chrs = { collect_skill = 0.25 };
 };
 \end{minted}
 \end{frame}
