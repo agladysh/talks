@@ -57,6 +57,19 @@
 \setbeamercolor{itemize subsubitem}{fg=chart11}
 \setbeamercolor{section in toc}{fg=chart11}
 
+%% -------------------------------------------------------------------------- %%
+
+\defbeamertemplate{footline}{left page number}
+{%
+  \hfill
+  \usebeamercolor[fg]{page number in head/foot}%
+  \usebeamerfont{page number in head/foot}%
+  \insertpagenumber\,/\,\insertpresentationendpage%
+  \hspace*{1em}
+  \vskip1em%
+}
+\setbeamertemplate{footline}[left page number]
+
 %% ========================================================================== %%
 
 \title{\includegraphics[height=.15\textheight]{logo}}
@@ -88,9 +101,9 @@
 \begin{frame}{About me}
 
 \begin{itemize}
-\item Programmer in background,
-\item but mainly doing management work now.
-\item In löve with Lua since 2005.
+\item Programmer background
+\item Mainly doing management work now
+\item In löve with Lua since 2005
 \end{itemize}
 
 \end{frame}
@@ -103,29 +116,61 @@
 
 \begin{frame}{The Case}
   \begin{itemize}
-    \item TODO
+    \item A huge professional enterprise application
+    \item being converted from 20-year-old windows app
+    \item to a modern SPA web-app.
   \end{itemize}
+
+  TODO: Screenshots
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{The product is huge}
+  Sufficient expertise can only be found on a team level:
+
+  \begin{itemize}
+    \item Technology experts don't have product-level vision
+    \item PO and PM don't draw (and lack deep insight on the tech)
+    \item Designer does not have the technology expertise
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{The UI design and development process}
+  For each "screen" in the application:
+
+  \begin{itemize}
+    \item Concept
+    \item Functional sketches and (sometimes) interactive studies
+    \item Design sketches
+    \item Layout implementation
+    \item Business logic implementation
+  \end{itemize}
+
+  TODO: Screenshots
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{A functional sketch}
+  What is on the screen, how does it WORK?
+
+  TODO: Screenshot
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{A design sketch}
+  How does it LOOK?
+
+  TODO: Screenshot
+\end{frame}
+
+%% ========================================================================== %%
+
 % TODO
-% -- The case, huge professional enterprise app,
-% -- conversion from 20-year-old UI to modern SPA web-app (screenshots)
-% -- TODO: Rename PM to something else, RnD team lead?!
-%
-% -- The UI development pipeline:
-% -- concept (technology experts, product owner and project manager)
-% -- functional sketches (project manager)
-% -- sometimes brief interactive and studies (project manager, programmers)
-% -- design sketches (designer)
-% -- UI layout implementation (layout programmer)
-% -- UI business logic (client programmers)
-% -- give screenshots/images for all stages
-%
-% -- Functional: WHAT is on the screen?
-% -- Design: HOW does it look?
-%
-% -- tech experts don't have new product vision
-% -- PO and PM have vision, but can't draw
-% -- designer don't know technology
-%
 % -- Alternative approaches: should not chafe and hamper design process
 % -- main goal is to iterate over designs rapidly
 % -- I don't have skills to do that in Photoshop / InkScape / Sketch / balsamiq
@@ -174,21 +219,12 @@
 % -- But look at other tools too, this one works for *me*.
 %
 % -- A link to source code
-%
-% -- Questions?
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{TODO}
-  \begin{itemize}
-    \item TODO
-  \end{itemize}
-\end{frame}
 
 %% ========================================================================== %%
 
 \section{Questions?}
+
+%% ========================================================================== %%
 
 % Using [plain] to hide frame number.
 \begin{frame}[plain]{Questions?}
@@ -203,6 +239,6 @@
 
 \end{frame}
 
-%% -------------------------------------------------------------------------- %%
+%% ========================================================================== %%
 
 \end{document}
