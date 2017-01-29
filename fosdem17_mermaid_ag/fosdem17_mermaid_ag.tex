@@ -1,0 +1,208 @@
+% Build with xetex.
+\documentclass[aspectratio=43,handout,bigger]{beamer}
+
+%% -------------------------------------------------------------------------- %%
+
+\usepackage{xunicode}
+\usepackage{xltxtra}
+\usepackage{graphicx}
+
+\usepackage{color}
+
+\usepackage{setspace}
+\usepackage{ragged2e}
+
+\usepackage[normalem]{ulem}
+
+\usepackage{minted}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,chains,calc,fit,matrix}
+
+%% -------------------------------------------------------------------------- %%
+
+\usepackage{polyglossia}
+\setmainlanguage{russian}
+\setotherlanguage{english}
+
+% NB: To get MS fonts for OS X:
+%
+% 1) Install MS Open XML Converter.
+% 2) Install OpenXML_all_fonts.pkg from inside of Converter's mpkg.
+%
+% http://www.labnol.org/software/tutorials/\
+% free-download-calibri-font-on-mac/3684/
+
+\setmainfont{Calibri}
+\setsansfont{Calibri}
+\setmonofont{Consolas}
+
+%% -------------------------------------------------------------------------- %%
+
+\mode<presentation>{
+  \usetheme{default}
+}
+
+\useinnertheme{circles}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{section in toc}[sections numbered]
+
+\definecolor{chart11}{RGB}{0, 0, 0}
+\setbeamercolor{title}{fg=chart11}
+\setbeamercolor{author}{fg=chart11}
+\setbeamercolor{frametitle}{fg=chart11}
+\setbeamercolor{itemize item}{fg=chart11}
+\setbeamercolor{itemize subitem}{fg=chart11}
+\setbeamercolor{itemize subsubitem}{fg=chart11}
+\setbeamercolor{section in toc}{fg=chart11}
+
+%% ========================================================================== %%
+
+\title{\includegraphics[height=.15\textheight]{logo}}
+\author{Quick functional UI sketches\\with Lua templates and mermaid.js}
+\institute{Alexander Gladysh\\@agladysh}
+\date{FOSDEM 2017}
+
+%% ========================================================================== %%
+
+\begin{document}
+
+% Using [plain] to avoid frame number on the title page.
+\begin{frame}[plain]
+ \titlepage
+\end{frame}
+
+%% ========================================================================== %%
+
+\begin{frame}{Talk plan}
+
+\tableofcontents
+
+\end{frame}
+
+%% ========================================================================== %%
+
+\section*{}
+
+\begin{frame}{About me}
+
+\begin{itemize}
+\item Programmer in background,
+\item but mainly doing management work now.
+\item In löve with Lua since 2005.
+\end{itemize}
+
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{The Case}
+
+%% ========================================================================== %%
+
+\begin{frame}{The Case}
+  \begin{itemize}
+    \item TODO
+  \end{itemize}
+% TODO
+% -- The case, huge professional enterprise app,
+% -- conversion from 20-year-old UI to modern SPA web-app (screenshots)
+% -- TODO: Rename PM to something else, RnD team lead?!
+%
+% -- The UI development pipeline:
+% -- concept (technology experts, product owner and project manager)
+% -- functional sketches (project manager)
+% -- sometimes brief interactive and studies (project manager, programmers)
+% -- design sketches (designer)
+% -- UI layout implementation (layout programmer)
+% -- UI business logic (client programmers)
+% -- give screenshots/images for all stages
+%
+% -- Functional: WHAT is on the screen?
+% -- Design: HOW does it look?
+%
+% -- tech experts don't have new product vision
+% -- PO and PM have vision, but can't draw
+% -- designer don't know technology
+%
+% -- Alternative approaches: should not chafe and hamper design process
+% -- main goal is to iterate over designs rapidly
+% -- I don't have skills to do that in Photoshop / InkScape / Sketch / balsamiq
+% -- / Visio / whatever drawing / UI design software. I tend to focus
+% -- on the visual, not functional and visual is irrelevant on this stage.
+% -- I work fastest when I use keyboard and don't touch the mouse
+% -- Teamwork on the source level doesn't matter, I'll be the only person
+% -- who produces the images (although they are discussed by a group).
+%
+% -- Another alternative is text descriptions, which are impossible to iterate
+% -- fast, and quickly become huge unmanageable entangled mess of cruft.
+% -- Excel is a bit better (for some screens), but it lacks a bit in visual
+% -- representation means.
+%
+% -- HTML works best for me, good old HTML4 from pre-js era.
+%
+% -- Tools: mermaid (MIT license) (mermaid cli tool, svg, phantomjs)
+% -- Show the UI screen flow diagram first
+% -- Then show how to embed some HTML
+% -- Then explain the visual language (arrows and stuff)
+% -- Then... TODO
+% -- Lua (MIT license) + Our template engine (MIT license) (+a remark on LaTeX)
+% -- How the engine works TODO
+%
+% -- Show how the tool is being run
+% -- Show tricks from prologue
+% -- Show how the production templates look
+%
+% -- How to approach the design (keep it as simple as possible,
+% -- some copy-paste is ok, generalize code/stuff when it chafes,
+% -- but not much earlier, to be able to iterate fast, you need to be able
+% -- to throw away stuff, to be able to throw away stuff easily, you
+% -- have to invest as little as possible in it; important to remember
+% -- that it is simply an image, not an interactive page)
+%
+% -- Problems
+% -- HTML4-era debugging for layout.
+% -- Lack of debugging tools for the template engine (easily added)
+% -- Some lack of expressive power (easily added if needed)
+%
+% -- How much effort went into it? (two days to code the core,
+% -- maybe three more days overall to work on the core along the 6 months
+% -- it is there; about 40 screens designed and many more to come)
+%
+% -- Was it worth it? Yes. Should you use it? If you're so inclined.
+% -- But look at other tools too, this one works for *me*.
+%
+% -- A link to source code
+%
+% -- Questions?
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{TODO}
+  \begin{itemize}
+    \item TODO
+  \end{itemize}
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{Questions?}
+
+% Using [plain] to hide frame number.
+\begin{frame}[plain]{Questions?}
+
+\begin{center}
+\Huge{@agladysh}
+\end{center}
+
+\begin{center}
+\Large{agladysh@gmail.com}
+\end{center}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\end{document}
