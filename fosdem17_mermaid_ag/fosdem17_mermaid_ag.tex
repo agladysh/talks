@@ -232,13 +232,15 @@ list-->|Create|new
 \begin{frame}[fragile]{Screen Flow Diagram (II)}
   \begin{columns}
     \begin{column}{.5\textwidth}
-\begin{minted}{text}
+\begin{minted}{html}
 graph TD
 
 list[List of Flights]
 new[New Flight Form]
 
-list-->|"<button>Create</button>"|new
+list-->|"
+<button>Create</button>
+"|new
 \end{minted}
 \end{column}
 \begin{column}{.5\textwidth}
@@ -252,15 +254,18 @@ list-->|"<button>Create</button>"|new
 \begin{frame}[fragile]{Screen Prototypes}
   \begin{columns}
     \begin{column}{.5\textwidth}
-\begin{minted}{html}
+\begin{minted}{text}
 graph TD
 
-list["<b>List of Flights</b><hr>
+list["<b>List of Flights</b>
+    <hr>
     <i>(No flights)</i><hr>
     <button>Create</button>"]
 
 new["New Flight Form"]
-list-->|"<button>Create</button>"|new
+list-->|"
+<button>Create</button>
+"|new
 \end{minted}
   \end{column}
   \begin{column}{.5\textwidth}
@@ -274,7 +279,7 @@ list-->|"<button>Create</button>"|new
 \begin{frame}[fragile]{Screen Prototypes (II)}
   \begin{columns}
     \begin{column}{.6\textwidth}
-\begin{minted}{html}
+\begin{minted}{text}
 graph TD
 list["List of Flights"]
 new["<b>New Flight</b><hr>
@@ -286,8 +291,8 @@ new["<b>New Flight</b><hr>
 <input value='22:30' size='5'>
 <hr><button>Create</button>
 <u>Cancel</u>"]
-new-->|"<button>Create
-  </button>"|list
+new-->|"
+<button>Create</button>"|list
 new-->|"<u>Cancel</u>"|list
 \end{minted}
     \end{column}
@@ -309,25 +314,31 @@ new-->|"<u>Cancel</u>"|list
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{It is hard to do HTML without templates}
-list.tpl
-\begin{minted}{html}
+\begin{frame}[fragile]{It is hard to do HTML without templates: list}
+\begin{minted}{text}
 <b>${title List of Flights}</b><hr>
+
 <i>(No flights)</i><hr>
+
 ${link new <button>Create</button>}
 \end{minted}
+\end{frame}
 
-\vskip 1em
+%% -------------------------------------------------------------------------- %%
 
-new.tpl
-\begin{minted}{html}
+\begin{frame}[fragile]{It is hard to do HTML without templates: new}
+\begin{minted}{text}
 <b>${title New Flight}</b><hr>
+
 <input value='SU' size='2'>-
-  <input value='2618' size='4'><br>
+<input value='2618' size='4'><br>
+
 <input value='MOW' size='4'> to
-  <input value='BRU' size='4'><br>
+<input value='BRU' size='4'><br>
+
 <input value='20:50' size='5'> to
-  <input value='10:30' size='5'><hr>
+<input value='10:30' size='5'><hr>
+
 ${link list <button>Create</button>}
 ${link list <button>Cancel</button>}
 \end{minted}
