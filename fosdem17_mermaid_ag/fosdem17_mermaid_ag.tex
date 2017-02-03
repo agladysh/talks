@@ -57,6 +57,8 @@
 \setbeamercolor{itemize subsubitem}{fg=chart11}
 \setbeamercolor{section in toc}{fg=chart11}
 
+\setbeamersize{text margin left=0.5cm,text margin right=0.5cm}
+
 %% -------------------------------------------------------------------------- %%
 
 \defbeamertemplate{footline}{left page number}
@@ -118,8 +120,6 @@
     \item being converted from 20-year-old windows app
     \item to a modern SPA web-app.
   \end{itemize}
-
-  TODO: Screenshots
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
@@ -147,8 +147,6 @@
     \item Layout implementation
     \item Business logic implementation
   \end{itemize}
-
-  TODO: Screenshots
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
@@ -156,7 +154,7 @@
 \begin{frame}{A functional sketch}
   What is on the screen, how does it WORK?
 
-  TODO: Screenshot
+  \centering{\includegraphics[height=.75\textheight]{seatmap}}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
@@ -164,14 +162,26 @@
 \begin{frame}{A design sketch}
   How does it LOOK?
 
-  TODO: Screenshot
+  \centering{\includegraphics[height=.75\textheight]{EQUIP-1_2}}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Goals}
+  \begin{itemize}
+    \item I need a diagram of the flow between app screens
+    \item I need functional sketches of the screens themselves
+    \item Basically it doesn't matter how I make them as long
+          as they are easy to make and change and there are some
+          facilities for reuse.
+  \end{itemize}
 \end{frame}
 
 %% ========================================================================== %%
 \section{Approaches to design}
 %% ========================================================================== %%
 
-\begin{frame}{Visual UI Sketching Tools}
+\begin{frame}{What tools to use?}
   \begin{itemize}
     \item Photoshop (Krita, Gimp...)
     \item InkScape
@@ -181,38 +191,10 @@
     \item Sketch
     \item ...
   \end{itemize}
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Visual UI Sketching Tools}
+  \vskip 1em
   I'm a programmer, I'm better with structured text than with images.
-  \newline
-  \newline
+  \vskip 1em
   I work fastest with the keyboard, not having to touch the mouse.
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Textual UI Sketching Tools}
-  \begin{itemize}
-    \item Good old natural text descriptions
-    \item Excel
-    \item ...
-    \item HTML!
-  \end{itemize}
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Goals}
-  \begin{itemize}
-    \item I need a diagram of the transfers between app screens
-    \item I need screens themselves
-    \item Basically it doesn't matter how I make them as long
-          as they are easy to make and change and there are some
-          facilities for reuse.
-  \end{itemize}
 \end{frame}
 
 %% ========================================================================== %%
@@ -222,76 +204,107 @@
 \begin{frame}{Enter the Mermaid}
   http://bit.ly/mermaid-editor
 
-  TODO: Screenshot
+  \centering{\includegraphics[width=.95\textwidth]{liveeditor}}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
 \begin{frame}[fragile]{Screen Flow Diagram}
+  \begin{columns}
+    \begin{column}{.5\textwidth}
 \begin{minted}{text}
 graph TD
-list[Flight List]
+
+list[List of Flights]
 new[New Flight Form]
+
 list-->|Create|new
 \end{minted}
-
-  TODO: Screenshot
+\end{column}
+\begin{column}{.5\textwidth}
+\centering{\includegraphics[width=\textwidth]{flights-1}}
+\end{column}
+\end{columns}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
 \begin{frame}[fragile]{Screen Flow Diagram (II)}
+  \begin{columns}
+    \begin{column}{.5\textwidth}
 \begin{minted}{text}
 graph TD
+
 list[List of Flights]
 new[New Flight Form]
+
 list-->|"<button>Create</button>"|new
 \end{minted}
-
-  TODO: Screenshot
+\end{column}
+\begin{column}{.5\textwidth}
+\centering{\includegraphics[width=\textwidth]{flights-2}}
+\end{column}
+\end{columns}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
 \begin{frame}[fragile]{Screen Prototypes}
-  \begin{minted}{html}
-  graph TD
-  list["<b>List of Flights</b><hr>
-        <i>(No flights)</i><hr>
-        <button>Create</button>"]
-  new["New Flight Form"]
-  list-->|"<button>Create</button>"|new
-  \end{minted}
+  \begin{columns}
+    \begin{column}{.5\textwidth}
+\begin{minted}{html}
+graph TD
 
-  TODO: Screenshot
+list["<b>List of Flights</b><hr>
+    <i>(No flights)</i><hr>
+    <button>Create</button>"]
+
+new["New Flight Form"]
+list-->|"<button>Create</button>"|new
+\end{minted}
+  \end{column}
+  \begin{column}{.5\textwidth}
+    \centering{\includegraphics[height=.9\textheight]{flights-3}}
+  \end{column}
+  \end{columns}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
 \begin{frame}[fragile]{Screen Prototypes (II)}
-  \begin{minted}{html}
-  graph TD
-  list["List of Flights"]
-  new["<b>New Flight</b><hr>
-      <input value='SU' size='2'>-
-        <input value='2618' size='4'><br>
-      <input value='MOW' size='4'> to
-        <input value='BRU' size='4'><br>
-      <input value='20:50' size='5'> to
-        <input value='10:30' size='5'><hr>
-      <button>Create</button>
-      <button>Cancel</button>"]
-  new-->|"<button>Create</button>"|list
-  new-->|"<button>Cancel</button>"|list
-  \end{minted}
-
-  TODO: Screenshot
+  \begin{columns}
+    \begin{column}{.6\textwidth}
+\begin{minted}{html}
+graph TD
+list["List of Flights"]
+new["<b>New Flight</b><hr>
+<input value='SU' size='2'>-
+<input value='2618' size='4'><br>
+<input value='MOW' size='5'> to
+<input value='BRU' size='5'><br>
+<input value='20:50' size='5'> to
+<input value='22:30' size='5'>
+<hr><button>Create</button>
+<u>Cancel</u>"]
+new-->|"<button>Create
+  </button>"|list
+new-->|"<u>Cancel</u>"|list
+\end{minted}
+    \end{column}
+    \begin{column}{.3\textwidth}
+      \centering{\includegraphics[width=\textwidth]{flights-4}}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
 \begin{frame}{Basic Documentation Structure}
-  TODO: Screenshots of a flow diagram and individual screen closeups
+  \centering{
+    \includegraphics[width=.3\textwidth]{flights-1}
+    \includegraphics[width=.3\textwidth]{flights-3}
+    \includegraphics[width=.3\textwidth]{flights-4}
+  }
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
@@ -324,25 +337,40 @@ ${link list <button>Cancel</button>}
 \section{Lugram Templates}
 %% ========================================================================== %%
 
-\begin{frame}{Basic helpers}
+\begin{frame}[fragile]{Basic helpers}
+\begin{minted}{text}
+${title New Flight}
+\end{minted}
+
   \${title <text:*>}
 
   \vskip 1em
 
-  \${link <screen:word> <text:*>}
+\begin{minted}{text}
+${link list <button>Create</button>}
+\end{minted}
+
+  \${link <screen:word> <body:*>}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
 \begin{frame}[fragile]{Basic helpers: pass-through definitions}
 \begin{minted}{text}
-  ${define title {{'*', 'text'}} [[${text}]]}
+${define title {{'*', 'text'}} [[${text}]]}
+
+${title New Flight} --> New Flight
 \end{minted}
 
+\vskip 1em
+
 \begin{minted}{text}
-  ${define link
-    {{'word', 'target'}, {'*', 'body'}}
-    [[${body}]]}
+${define link
+  {{'word', 'target'}, {'*', 'body'}}
+  [[${body}]]}
+
+${link list <button>Create</button>}
+--> <button>Create</button>
 \end{minted}
 
 \vskip 1em
@@ -354,24 +382,22 @@ ${link list <button>Cancel</button>}
 
 \begin{frame}[fragile]{define}
 \begin{minted}{lua}
-  define = function(context, str)
-    local symbol, str = eat.word(str)
-    local args, str = eat.table(str)
-    local code, str = eat['*'](str)
-    args, code = lua_value(args), lua_value(code)
-    if type(code) == 'string' then
-      code = function(context)
-        return context:replace(code)
-      end
-    end
-    context._ROOT[symbol] = function(parent, str)
-      local context = { }
-      for i = 1, #args do
-        context[args[i][1]], str = eat[args[i][2]](str)
-      end
-      return code(parent:push(context))
-    end
+define = function(context, str)
+  local symbol, str = eat.word(str)
+  local args, str = eat.table(str)
+  local code, str = eat['*'](str)
+  args, code = lua_value(args), lua_value(code)
+  if type(code) == 'string' then code =
+    function(ctx) return ctx:replace(code) end
   end
+  context._ROOT[symbol] = function(parent, str)
+    local ctx = { }
+    for i = 1, #args do
+      ctx[args[i][1]], str = eat[args[i][2]](str)
+    end
+    return code(parent:push(ctx))
+  end
+end
 \end{minted}
 \end{frame}
 
@@ -379,20 +405,21 @@ ${link list <button>Cancel</button>}
 
 \begin{frame}[fragile]{helpers: definitions using Lua}
 \begin{minted}{text}
-  ${define title {{'*', 'text'}} function(context)
-    local text = context:replace(context.text)
-    context._ROOT._SCREENS[text] = text
-    return text
-  end}
+${define title {{'*', 'text'}} function(context)
+  local text = context:replace(context.text)
+  context._ROOT._SCREENS[text] = text
+  return text
+end}
 \end{minted}
 
 \begin{minted}{text}
-  ${define link {{'word', 'target'}, {'*', 'body'}} function(context)
-    local target = context:replace(context.text)
-    context._ROOT._LINKS[target] = context._MODULE
-    context:include(target) -- Ignoring result
-    return context:replace(context.body)
-  end}
+${define link {{'word', 'target'}, {'*', 'body'}}
+function(context)
+  local target = context:replace(context.text)
+  context._ROOT._LINKS[target] = context._MODULE
+  context:include(target) -- Ignoring result
+  return context:replace(context.body)
+end}
 \end{minted}
 \end{frame}
 
@@ -400,13 +427,13 @@ ${link list <button>Cancel</button>}
 
 \begin{frame}[fragile]{include}
 \begin{minted}{lua}
-  include = function(context, template)
-    return context:push(
-      { _MODULE = template }
-    ):replace(
-      assert(io.open(filename)):read("*a")
-    )
-  end
+include = function(context, template)
+  return context:push(
+    { _MODULE = template }
+  ):replace(
+    assert(io.open(filename)):read("*a")
+  )
+end
 \end{minted}
 \end{frame}
 
@@ -427,21 +454,13 @@ ${link list <button>Cancel</button>}
 
 \begin{frame}[fragile]{More Useful helpers}
 \begin{minted}{text}
-  ${define # {{'*', 'comment'}} [[]]}
-  ${define --[HR]------...--------- {} [[<hr>]]}
+${define # {{'*', 'comment'}} [[]]}
+${define --[HR]------...--------- {} [[<hr>]]}
 
-  ${define when {{'word', 'symbol'}, {'*', 'body'}} function(context)
-    if context[context.symbol] then -- cf. symmetrical ${unless}
-      return context:replace(context.body)
-    end
-    return ""
-  end}
-
-  -- also: ${if ${foo} >= ${bar} something}
-
-  ${define expr {{'*', 'code'}} function(context)
-    return assert(loadstring('return ' .. context:replace(context.code)))()
-  end}
+${define expr {{'*', 'code'}} function(context)
+  return assert(loadstring('return '
+    .. context:replace(context.code)))()
+end}
 \end{minted}
 \end{frame}
 
@@ -449,16 +468,20 @@ ${link list <button>Cancel</button>}
 
 \begin{frame}[fragile]{with helper}
 \begin{minted}{text}
-  ${define with {{'table', 'more_context'}, {'*', 'body'}} function(context)
-    return context:replace(context:push(context.more_context), context.body)
-  end}
+${define with {{'table', 'more_context'},
+  {'*', 'body'}} function(context)
+  return context:replace(
+    context:push(context.more_context),
+    context.body)
+end}
 
-  ${define form {} [[
-    ${when editable <input value='MOW'> to <input value='BRU'>}
-    ${unless editable MOW to BRU}
-  ]]}
+${define form {} [[
+  ${when editable
+    <input value='MOW'> to <input value='BRU'>}
+  ${unless editable MOW to BRU}
+]]}
 
-  ${with {editable = true} ${form}}
+${with {editable = true} ${form}}
 \end{minted}
 \end{frame}
 
@@ -466,15 +489,18 @@ ${link list <button>Cancel</button>}
 
 \begin{frame}[fragile]{with helper (II)}
 \begin{minted}{html}
-  ${define histogram {{'word', 'a'}, {'word', 'b'}, {'word', 'c'}} [[
-  ${with { w = '${expr ${a} + ${b} + {c}}' }
-    <div style='width:${w}px; background-color: red'>
-      <div style='width:${a}px; background-color: green'>${a}</div>
-      <div style='width:${b}px; background-color: blue'>${b}</div>
-    </div>
-  }]]}
+${define histogram {{'word', 'a'},
+  {'word', 'b'}, {'word', 'c'}} [[
+${with { w = '${expr ${a} + ${b} + {c}}' }
+  <div style='width:${w}px' class='red'>
+    <div style='width:${a}px'
+      class='green'>${a}</div>
+    <div style='width:${b}px'
+      class='blue'>${b}</div>
+  </div>
+}]]}
 
-  ${histogram 1 2 3}
+${histogram 1 2 3}
 \end{minted}
 \end{frame}
 
@@ -530,7 +556,6 @@ ${link list <button>Cancel</button>}
 
 %% -------------------------------------------------------------------------- %%
 
-% -- Fill in all screenshots
 % -- A link to source code (+set the org description, logo etc)
 
 %% ========================================================================== %%
