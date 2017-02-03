@@ -109,9 +109,7 @@
 \end{frame}
 
 %% ========================================================================== %%
-
 \section{The Case}
-
 %% ========================================================================== %%
 
 \begin{frame}{The Case}
@@ -131,8 +129,9 @@
 
   \begin{itemize}
     \item Technology experts don't have product-level vision
-    \item PO and PM don't draw (and lack deep insight on the tech)
-    \item Designer does not have the technology expertise
+    \item PO and PM don't draw professionally
+          (and lack deep insight on the tech)
+    \item Designer does not have the professional-level technology expertise
   \end{itemize}
 \end{frame}
 
@@ -169,9 +168,7 @@
 \end{frame}
 
 %% ========================================================================== %%
-
 \section{Approaches to design}
-
 %% ========================================================================== %%
 
 \begin{frame}{Visual UI Sketching Tools}
@@ -188,54 +185,353 @@
 
 %% -------------------------------------------------------------------------- %%
 
-% TODO
-% -- Alternative approaches: should not chafe and hamper design process
-% -- main goal is to iterate over designs rapidly
-% I tend to focus
-% -- on the visual, not functional and visual is irrelevant on this stage.
-% -- I work fastest when I use keyboard and don't touch the mouse
-% -- Teamwork on the source level doesn't matter, I'll be the only person
-% -- who produces the images (although they are discussed by a group).
-%
-% -- Another alternative is text descriptions, which are impossible to iterate
-% -- fast, and quickly become huge unmanageable entangled mess of cruft.
-% -- Excel is a bit better (for some screens), but it lacks a bit in visual
-% -- representation means.
-%
-% -- HTML works best for me, good old HTML4 from pre-js era.
-%
-% -- Tools: mermaid (MIT license) (mermaid cli tool, svg, phantomjs)
-% -- Show the UI screen flow diagram first
-% -- Then show how to embed some HTML
-% -- Then explain the visual language (arrows and stuff)
-% -- Then... TODO
-% -- Lua (MIT license) + Our template engine (MIT license) (+a remark on LaTeX)
-% -- How the engine works TODO
-%
-% -- Show how the tool is being run
-% -- Show tricks from prologue
-% -- Show how the production templates look
-%
-% -- How to approach the design (keep it as simple as possible,
-% -- some copy-paste is ok, generalize code/stuff when it chafes,
-% -- but not much earlier, to be able to iterate fast, you need to be able
-% -- to throw away stuff, to be able to throw away stuff easily, you
-% -- have to invest as little as possible in it; important to remember
-% -- that it is simply an image, not an interactive page)
-%
-% -- Problems
-% -- HTML4-era debugging for layout.
-% -- Lack of debugging tools for the template engine (easily added)
-% -- Some lack of expressive power (easily added if needed)
-%
-% -- How much effort went into it? (two days to code the core,
-% -- maybe three more days overall to work on the core along the 6 months
-% -- it is there; about 40 screens designed and many more to come)
-%
-% -- Was it worth it? Yes. Should you use it? If you're so inclined.
-% -- But look at other tools too, this one works for *me*.
-%
-% -- A link to source code
+\begin{frame}{Visual UI Sketching Tools}
+  I'm a programmer, I'm better with structured text than with images.
+  \newline
+  \newline
+  I work fastest with the keyboard, not having to touch the mouse.
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Textual UI Sketching Tools}
+  \begin{itemize}
+    \item Good old natural text descriptions
+    \item Excel
+    \item ...
+    \item HTML!
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Goals}
+  \begin{itemize}
+    \item I need a diagram of the transfers between app screens
+    \item I need screens themselves
+    \item Basically it doesn't matter how I make them as long
+          as they are easy to make and change and there are some
+          facilities for reuse.
+  \end{itemize}
+\end{frame}
+
+%% ========================================================================== %%
+\section{Enter the Mermaid}
+%% ========================================================================== %%
+
+\begin{frame}{Enter the Mermaid}
+  http://bit.ly/mermaid-editor
+
+  TODO: Screenshot
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Screen Flow Diagram}
+\begin{minted}{text}
+graph TD
+list[Flight List]
+new[New Flight Form]
+list-->|Create|new
+\end{minted}
+
+  TODO: Screenshot
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Screen Flow Diagram (II)}
+\begin{minted}{text}
+graph TD
+list[List of Flights]
+new[New Flight Form]
+list-->|"<button>Create</button>"|new
+\end{minted}
+
+  TODO: Screenshot
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Screen Prototypes}
+  \begin{minted}{html}
+  graph TD
+  list["<b>List of Flights</b><hr>
+        <i>(No flights)</i><hr>
+        <button>Create</button>"]
+  new["New Flight Form"]
+  list-->|"<button>Create</button>"|new
+  \end{minted}
+
+  TODO: Screenshot
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Screen Prototypes (II)}
+  \begin{minted}{html}
+  graph TD
+  list["List of Flights"]
+  new["<b>New Flight</b><hr>
+      <input value='SU' size='2'>-
+        <input value='2618' size='4'><br>
+      <input value='MOW' size='4'> to
+        <input value='BRU' size='4'><br>
+      <input value='20:50' size='5'> to
+        <input value='10:30' size='5'><hr>
+      <button>Create</button>
+      <button>Cancel</button>"]
+  new-->|"<button>Create</button>"|list
+  new-->|"<button>Cancel</button>"|list
+  \end{minted}
+
+  TODO: Screenshot
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Basic Documentation Structure}
+  TODO: Screenshots of a flow diagram and individual screen closeups
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{It is hard to do HTML without templates}
+list.tpl
+\begin{minted}{html}
+<b>${title List of Flights}</b><hr>
+<i>(No flights)</i><hr>
+${link new <button>Create</button>}
+\end{minted}
+
+\vskip 1em
+
+new.tpl
+\begin{minted}{html}
+<b>${title New Flight}</b><hr>
+<input value='SU' size='2'>-
+  <input value='2618' size='4'><br>
+<input value='MOW' size='4'> to
+  <input value='BRU' size='4'><br>
+<input value='20:50' size='5'> to
+  <input value='10:30' size='5'><hr>
+${link list <button>Create</button>}
+${link list <button>Cancel</button>}
+\end{minted}
+\end{frame}
+
+%% ========================================================================== %%
+\section{Lugram Templates}
+%% ========================================================================== %%
+
+\begin{frame}{Basic helpers}
+  \${title <text:*>}
+
+  \vskip 1em
+
+  \${link <screen:word> <text:*>}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Basic helpers: pass-through definitions}
+\begin{minted}{text}
+  ${define title {{'*', 'text'}} [[${text}]]}
+\end{minted}
+
+\begin{minted}{text}
+  ${define link
+    {{'word', 'target'}, {'*', 'body'}}
+    [[${body}]]}
+\end{minted}
+
+\vskip 1em
+
+\${define <symbol:word> <arguments:table> <code:*>}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{define}
+\begin{minted}{lua}
+  define = function(context, str)
+    local symbol, str = eat.word(str)
+    local args, str = eat.table(str)
+    local code, str = eat['*'](str)
+    args, code = lua_value(args), lua_value(code)
+    if type(code) == 'string' then
+      code = function(context)
+        return context:replace(code)
+      end
+    end
+    context._ROOT[symbol] = function(parent, str)
+      local context = { }
+      for i = 1, #args do
+        context[args[i][1]], str = eat[args[i][2]](str)
+      end
+      return code(parent:push(context))
+    end
+  end
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{helpers: definitions using Lua}
+\begin{minted}{text}
+  ${define title {{'*', 'text'}} function(context)
+    local text = context:replace(context.text)
+    context._ROOT._SCREENS[text] = text
+    return text
+  end}
+\end{minted}
+
+\begin{minted}{text}
+  ${define link {{'word', 'target'}, {'*', 'body'}} function(context)
+    local target = context:replace(context.text)
+    context._ROOT._LINKS[target] = context._MODULE
+    context:include(target) -- Ignoring result
+    return context:replace(context.body)
+  end}
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{include}
+\begin{minted}{lua}
+  include = function(context, template)
+    return context:push(
+      { _MODULE = template }
+    ):replace(
+      assert(io.open(filename)):read("*a")
+    )
+  end
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Diagram styles}
+  Depending on how you define \${title} and \${link},
+  you get several kinds of diagram from the same set of templates:
+
+  \begin{itemize}
+    \item Outline diagram (titles and arrows only, "screen flow")
+    \item Closeup diagram (screen content and flow from this screen to others)
+    \item Printable diagram (screen content only)
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{More Useful helpers}
+\begin{minted}{text}
+  ${define # {{'*', 'comment'}} [[]]}
+  ${define --[HR]------...--------- {} [[<hr>]]}
+
+  ${define when {{'word', 'symbol'}, {'*', 'body'}} function(context)
+    if context[context.symbol] then -- cf. symmetrical ${unless}
+      return context:replace(context.body)
+    end
+    return ""
+  end}
+
+  -- also: ${if ${foo} >= ${bar} something}
+
+  ${define expr {{'*', 'code'}} function(context)
+    return assert(loadstring('return ' .. context:replace(context.code)))()
+  end}
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{with helper}
+\begin{minted}{text}
+  ${define with {{'table', 'more_context'}, {'*', 'body'}} function(context)
+    return context:replace(context:push(context.more_context), context.body)
+  end}
+
+  ${define form {} [[
+    ${when editable <input value='MOW'> to <input value='BRU'>}
+    ${unless editable MOW to BRU}
+  ]]}
+
+  ${with {editable = true} ${form}}
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{with helper (II)}
+\begin{minted}{html}
+  ${define histogram {{'word', 'a'}, {'word', 'b'}, {'word', 'c'}} [[
+  ${with { w = '${expr ${a} + ${b} + {c}}' }
+    <div style='width:${w}px; background-color: red'>
+      <div style='width:${a}px; background-color: green'>${a}</div>
+      <div style='width:${b}px; background-color: blue'>${b}</div>
+    </div>
+  }]]}
+
+  ${histogram 1 2 3}
+\end{minted}
+\end{frame}
+
+%% ========================================================================== %%
+\section{Conclusion}
+%% ========================================================================== %%
+
+\begin{frame}{Some statistics}
+  \begin{itemize}
+    \item Two days to implement core, about 250 LOC.
+    \item After six months of non-fulltime usage, core grew to about 330 LOC,
+          mostly additional diagnostics.
+    \item About 60 sketches finalized (5KLOC of templates), more to come.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Was it worth it?}
+  Yes.
+  \begin{itemize}
+    \item I've got a low-cost lightweight flexible framework
+          for design that does not chafe in wrong places.
+    \item Its output, while not ideal, is reasonably understandable
+          by all members of the team.
+    \item Also: much fun implementing yet another template engine.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Why not X?}
+  \begin{itemize}
+    \item The cost is so low, the adaptation of existing tool to my requirements
+          (or just learning the proper ropes) would probably cost
+          about the same.
+    \item But if you know a good candidate that fits here, please do chime in.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Problems}
+  \begin{itemize}
+    \item Error diagnostics and debugging for templates.
+          Almost non-existent. Lots of low-hanging fruit there.
+    \item Debugging of the HTML output render. IE6-hard,
+          rather difficult to improve. Keep HTML simple.
+    \item Expressive power of the language could be improved.
+          No need so far.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+% -- Fill in all screenshots
+% -- A link to source code (+set the org description, logo etc)
 
 %% ========================================================================== %%
 
