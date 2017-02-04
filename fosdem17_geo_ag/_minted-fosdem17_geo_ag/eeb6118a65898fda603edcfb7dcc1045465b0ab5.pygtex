@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{k}{FROM}\PYGdefault{l+s}{ openresty/openresty}
+COPY bin/entrypoint.sh /usr/local/bin/openresty\PYGdefaultZhy{}entrypoint.sh
+COPY nginx/conf /usr/local/openresty/nginx/conf
+COPY nginx/lualib /usr/loca/openresty/nginx/lualib
+COPY nginx/lua /usr/loca/openresty/nginx/lua
+COPY nginx/static /usr/loca/openresty/nginx/static
+\PYGdefault{k}{ENTRYPOINT}\PYGdefault{l+s}{ /usr/local/bin/openresty\PYGdefaultZhy{}entrypoint.sh}
+\end{Verbatim}

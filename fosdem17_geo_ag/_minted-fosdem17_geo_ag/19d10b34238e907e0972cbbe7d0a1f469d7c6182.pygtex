@@ -1,0 +1,17 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{p}{\PYGdefaultZob{}}
+  \PYGdefault{n}{id} \PYGdefault{o}{=} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{proto.mob.collectable\PYGdefaultZsq{}}\PYGdefault{p}{;}
+  \PYGdefault{n}{chrs} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{n}{respawn\PYGdefaultZus{}dt} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{10} \PYGdefault{o}{*} \PYGdefault{l+m+mi}{60} \PYGdefault{p}{\PYGdefaultZcb{};}
+  \PYGdefault{n}{actions} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{mob.collect\PYGdefaultZsq{}} \PYGdefault{p}{\PYGdefaultZcb{};}
+\PYGdefault{p}{\PYGdefaultZcb{};}
+\PYGdefault{p}{\PYGdefaultZob{}}
+  \PYGdefault{n}{id} \PYGdefault{o}{=} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{proto.mob.toad.green\PYGdefaultZsq{}}\PYGdefault{p}{;}
+  \PYGdefault{n}{proto\PYGdefaultZus{}id} \PYGdefault{o}{=} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{proto.mob.collectable\PYGdefaultZsq{}}\PYGdefault{p}{;}
+  \PYGdefault{n}{chrs} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{n}{escape\PYGdefaultZus{}chance} \PYGdefault{o}{=} \PYGdefault{l+m+mf}{0.25} \PYGdefault{p}{\PYGdefaultZcb{};}
+\PYGdefault{p}{\PYGdefaultZcb{};}
+\PYGdefault{p}{\PYGdefaultZob{}}
+  \PYGdefault{n}{id} \PYGdefault{o}{=} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{fa2eb7bca46c11e6be447831c1cebc82\PYGdefaultZsq{}}\PYGdefault{p}{;}
+  \PYGdefault{n}{proto\PYGdefaultZus{}id} \PYGdefault{o}{=} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{proto.mob.toad.green\PYGdefaultZsq{}}\PYGdefault{p}{;}
+  \PYGdefault{n}{geo} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{n}{lat} \PYGdefault{o}{=} \PYGdefault{l+m+mf}{55.7558}\PYGdefault{p}{,} \PYGdefault{n}{lon} \PYGdefault{o}{=} \PYGdefault{l+m+mf}{37.6173} \PYGdefault{p}{\PYGdefaultZcb{};}
+\PYGdefault{p}{\PYGdefaultZcb{};}
+\end{Verbatim}

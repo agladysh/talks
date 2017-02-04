@@ -1,0 +1,13 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PYGdefaultZlt{}...\PYGdefaultZgt{}
+  openresty:
+    build: .
+    ports:
+      \PYGdefaultZhy{} \PYGdefaultZdq{}8080:8080\PYGdefaultZdq{}
+    volumes:
+      \PYGdefaultZhy{} ./nginx/lualib:/usr/local/openresty/nginx/lualib:ro
+      \PYGdefaultZhy{} ./nginx/api:/usr/local/openresty/nginx/api:ro
+      \PYGdefaultZhy{} ./nginx/static:/usr/local/openresty/nginx/static:ro
+    links:
+      \PYGdefaultZhy{} redis
+\end{Verbatim}

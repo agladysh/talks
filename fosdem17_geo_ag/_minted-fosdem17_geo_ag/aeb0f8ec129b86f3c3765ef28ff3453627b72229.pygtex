@@ -1,0 +1,15 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{k}{error\PYGdefaultZus{}log} \PYGdefault{l+s}{logs/error.log} \PYGdefault{l+s}{notice}\PYGdefault{p}{;}
+\PYGdefault{k}{http} \PYGdefault{p}{\PYGdefaultZob{}}
+  \PYGdefault{k+kn}{include} \PYGdefault{l+s}{resolvers.conf}\PYGdefault{p}{;}
+  \PYGdefault{k+kn}{lua\PYGdefaultZus{}package\PYGdefaultZus{}path} \PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{n+nv}{\PYGdefaultZdl{}prefix/lualib/?.lua}\PYGdefault{p}{;};\PYGdefault{k+kn}{\PYGdefaultZdq{}}\PYGdefault{p}{;}
+  \PYGdefault{k+kn}{lua\PYGdefaultZus{}code\PYGdefaultZus{}cache} \PYGdefault{n+no}{off}\PYGdefault{p}{;} \PYGdefault{c+c1}{\PYGdefaultZsh{} TODO: Enable on production!}
+  \PYGdefault{k+kn}{server} \PYGdefault{p}{\PYGdefaultZob{}}
+    \PYGdefault{k+kn}{listen} \PYGdefault{l+m+mi}{8080}\PYGdefault{p}{;}
+    \PYGdefault{k+kn}{include} \PYGdefault{l+s}{mime.types}\PYGdefault{p}{;}
+    \PYGdefault{k+kn}{default\PYGdefaultZus{}type} \PYGdefault{l+s}{application/json}\PYGdefault{p}{;}
+    \PYGdefault{k+kn}{location} \PYGdefault{l+s}{/} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{k+kn}{index} \PYGdefault{l+s}{index.html}\PYGdefault{p}{;} \PYGdefault{k+kn}{root} \PYGdefault{l+s}{static/}\PYGdefault{p}{;} \PYGdefault{p}{\PYGdefaultZcb{}}
+    \PYGdefault{k+kn}{location} \PYGdefault{p}{=} \PYGdefault{l+s}{/api/v1/} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{k+kn}{content\PYGdefaultZus{}by\PYGdefaultZus{}lua\PYGdefaultZus{}file} \PYGdefault{l+s}{\PYGdefaultZsq{}api/index.lua\PYGdefaultZsq{}}\PYGdefault{p}{;} \PYGdefault{p}{\PYGdefaultZcb{}}
+  \PYGdefault{p}{\PYGdefaultZcb{}}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+\end{Verbatim}

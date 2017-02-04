@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{p}{\PYGdefaultZob{}}
+  \PYGdefault{n}{id} \PYGdefault{o}{=} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{proto.user\PYGdefaultZsq{}}\PYGdefault{p}{;}
+  \PYGdefault{n}{chrs} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{n}{vision} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{100}\PYGdefault{p}{,} \PYGdefault{n}{reach} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{50} \PYGdefault{p}{\PYGdefaultZcb{};}
+\PYGdefault{p}{\PYGdefaultZcb{};}
+\PYGdefault{p}{\PYGdefaultZob{}}
+  \PYGdefault{n}{id} \PYGdefault{o}{=} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{user.1\PYGdefaultZsq{}}\PYGdefault{p}{;}
+  \PYGdefault{n}{geo} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{n}{lat} \PYGdefault{o}{=} \PYGdefault{l+m+mf}{55.7558}\PYGdefault{p}{,} \PYGdefault{n}{lon} \PYGdefault{o}{=} \PYGdefault{l+m+mf}{37.6173} \PYGdefault{p}{\PYGdefaultZcb{};}
+  \PYGdefault{n}{chrs} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{n}{collect\PYGdefaultZus{}skill} \PYGdefault{o}{=} \PYGdefault{l+m+mf}{0.5} \PYGdefault{p}{\PYGdefaultZcb{};}
+\PYGdefault{p}{\PYGdefaultZcb{};}
+\end{Verbatim}

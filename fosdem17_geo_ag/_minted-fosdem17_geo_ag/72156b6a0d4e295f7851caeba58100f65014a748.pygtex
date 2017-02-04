@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{p}{\PYGdefaultZob{}}
+  \PYGdefault{n}{id} \PYGdefault{o}{=} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{proto.item.spawner.toad.green\PYGdefaultZsq{}}\PYGdefault{p}{;}
+  \PYGdefault{n}{actions} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}}
+    \PYGdefault{p}{[}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{mob.spawn\PYGdefaultZsq{}}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}}
+      \PYGdefault{n}{requires} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{user.admin\PYGdefaultZsq{}} \PYGdefault{p}{\PYGdefaultZcb{};}
+      \PYGdefault{n}{param} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{n}{proto\PYGdefaultZus{}id} \PYGdefault{o}{=} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{proto.mob.toad.green\PYGdefaultZsq{}} \PYGdefault{p}{\PYGdefaultZcb{};}
+    \PYGdefault{p}{\PYGdefaultZcb{};}
+  \PYGdefault{p}{\PYGdefaultZcb{};}
+\PYGdefault{p}{\PYGdefaultZcb{};}
+\end{Verbatim}

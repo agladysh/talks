@@ -1,0 +1,15 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{p}{\PYGdefaultZob{}}
+  \PYGdefault{n}{id} \PYGdefault{o}{=} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{proto.item.wearable\PYGdefaultZsq{}}\PYGdefault{p}{;}
+  \PYGdefault{n}{actions} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}}
+    \PYGdefault{p}{[}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{item.don\PYGdefaultZsq{}}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{n}{enabled} \PYGdefault{o}{=} \PYGdefault{k+kc}{true} \PYGdefault{p}{\PYGdefaultZcb{};}
+    \PYGdefault{p}{[}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{item.doff\PYGdefaultZsq{}}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{n}{enabled} \PYGdefault{o}{=} \PYGdefault{k+kc}{false} \PYGdefault{p}{\PYGdefaultZcb{};}
+  \PYGdefault{p}{\PYGdefaultZcb{};}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+\PYGdefault{p}{\PYGdefaultZob{}}
+  \PYGdefault{n}{id} \PYGdefault{o}{=} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{proto.item.admin\PYGdefaultZhy{}hat\PYGdefaultZsq{}}\PYGdefault{p}{;}
+  \PYGdefault{n}{proto\PYGdefaultZus{}id} \PYGdefault{o}{=} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{proto.item.wearable\PYGdefaultZsq{}}\PYGdefault{p}{;}
+  \PYGdefault{n}{grants} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{user.admin\PYGdefaultZsq{}} \PYGdefault{p}{\PYGdefaultZcb{};}
+  \PYGdefault{n}{chrs} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{n}{collect\PYGdefaultZus{}skill} \PYGdefault{o}{=} \PYGdefault{l+m+mf}{0.25} \PYGdefault{p}{\PYGdefaultZcb{};}
+\PYGdefault{p}{\PYGdefaultZcb{};}
+\end{Verbatim}

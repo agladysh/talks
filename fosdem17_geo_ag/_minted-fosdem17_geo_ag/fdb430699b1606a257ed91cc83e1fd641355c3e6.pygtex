@@ -1,0 +1,8 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{k+kd}{local} \PYGdefault{n}{timestamp} \PYGdefault{o}{=} \PYGdefault{n+nb}{os.time}\PYGdefault{p}{()}
+\PYGdefault{k+kd}{local} \PYGdefault{n}{action\PYGdefaultZus{}ids} \PYGdefault{o}{=} \PYGdefault{n}{redis}\PYGdefault{p}{:}\PYGdefault{n}{zrangebyscore}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{da\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{\PYGdefaultZhy{}inf\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{n}{timestamp}\PYGdefault{p}{)}
+\PYGdefault{k}{for} \PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{,} \PYGdefault{o}{\PYGdefaultZsh{}}\PYGdefault{n}{action\PYGdefaultZus{}ids} \PYGdefault{k}{do}
+  \PYGdefault{c+c1}{\PYGdefaultZhy{}\PYGdefaultZhy{} Execute action\PYGdefaultZus{}ids[i] action}
+\PYGdefault{k}{end}
+\PYGdefault{n}{redis}\PYGdefault{p}{:}\PYGdefault{n}{zremrangebyscore}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{da\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{\PYGdefaultZhy{}inf\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{n}{timestamp}\PYGdefault{p}{)}
+\end{Verbatim}

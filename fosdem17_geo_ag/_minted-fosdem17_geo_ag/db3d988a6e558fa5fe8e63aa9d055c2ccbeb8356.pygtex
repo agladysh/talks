@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{c}{\PYGdefaultZsh{}!/bin/sh}
+grep nameserver /etc/resolv.conf \PYGdefault{l+s+se}{\PYGdefaultZbs{}}
+  \PYGdefault{p}{|} awk \PYGdefault{l+s+s1}{\PYGdefaultZsq{}\PYGdefaultZob{}print  \PYGdefaultZdq{}resolver \PYGdefaultZdq{} \PYGdefaultZdl{}2 \PYGdefaultZdq{};\PYGdefaultZdq{}\PYGdefaultZcb{}\PYGdefaultZsq{}} \PYGdefault{l+s+se}{\PYGdefaultZbs{}}
+  \PYGdefaultZgt{} /usr/local/openresty/nginx/conf/resolvers.conf
+/usr/local/openresty/bin/openresty \PYGdefaultZhy{}g \PYGdefault{l+s+s1}{\PYGdefaultZsq{}daemon off;\PYGdefaultZsq{}} \PYGdefault{l+s+s2}{\PYGdefaultZdq{}}\PYGdefault{n+nv}{\PYGdefaultZdl{}@}\PYGdefault{l+s+s2}{\PYGdefaultZdq{}}
+\end{Verbatim}

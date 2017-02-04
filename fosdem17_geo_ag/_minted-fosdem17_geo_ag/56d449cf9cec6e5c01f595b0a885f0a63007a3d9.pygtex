@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{k+kd}{local} \PYGdefault{n}{hat} \PYGdefault{o}{=} \PYGdefault{n}{go\PYGdefaultZus{}new}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{proto.item.admin\PYGdefaultZhy{}hat\PYGdefaultZsq{}}\PYGdefault{p}{)}
+
+\PYGdefault{n+nb}{assert}\PYGdefault{p}{(}\PYGdefault{n}{go\PYGdefaultZus{}get}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{user.1\PYGdefaultZsq{}}\PYGdefault{p}{).}\PYGdefault{n}{stored}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{]} \PYGdefault{o}{==} \PYGdefault{k+kc}{nil}\PYGdefault{p}{)}
+
+\PYGdefault{n}{go\PYGdefaultZus{}store}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{user.1\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{n}{hat}\PYGdefault{p}{.}\PYGdefault{n}{id}\PYGdefault{p}{)}
+
+\PYGdefault{n+nb}{assert}\PYGdefault{p}{(}\PYGdefault{n}{go\PYGdefaultZus{}get}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{user.1\PYGdefaultZsq{}}\PYGdefault{p}{).}\PYGdefault{n}{stored}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{]} \PYGdefault{o}{==} \PYGdefault{n}{hat}\PYGdefault{p}{.}\PYGdefault{n}{id}\PYGdefault{p}{)}
+\end{Verbatim}

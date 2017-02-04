@@ -1,0 +1,17 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{n}{ACTIONS}\PYGdefault{p}{[}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{mob.collect\PYGdefaultZsq{}}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{k}{function}\PYGdefault{p}{(}\PYGdefault{n}{target}\PYGdefault{p}{,} \PYGdefault{n}{initiator}\PYGdefault{p}{)}
+  \PYGdefault{k}{if}
+    \PYGdefault{n+nb}{math.random}\PYGdefault{p}{()} \PYGdefault{o}{*} \PYGdefault{n}{initiator}\PYGdefault{p}{.}\PYGdefault{n}{chrs}\PYGdefault{p}{.}\PYGdefault{n}{collect\PYGdefaultZus{}skill} \PYGdefault{o}{\PYGdefaultZgt{}}
+    \PYGdefault{n}{target}\PYGdefault{p}{.}\PYGdefault{n}{chrs}\PYGdefault{p}{.}\PYGdefault{n}{escape\PYGdefaultZus{}chance}
+  \PYGdefault{k}{then}
+    \PYGdefault{c+c1}{\PYGdefaultZhy{}\PYGdefaultZhy{} Inc number of catches for this mob type}
+    \PYGdefault{n}{go\PYGdefaultZus{}inc\PYGdefaultZus{}chr}\PYGdefault{p}{(}\PYGdefault{n}{initiator}\PYGdefault{p}{.}\PYGdefault{n}{id}\PYGdefault{p}{,} \PYGdefault{n}{target}\PYGdefault{p}{.}\PYGdefault{n}{proto\PYGdefaultZus{}id}\PYGdefault{p}{,} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{)}
+    \PYGdefault{n}{go\PYGdefaultZus{}schedule\PYGdefaultZus{}action\PYGdefaultZus{}initiation}\PYGdefault{p}{(} \PYGdefault{c+c1}{\PYGdefaultZhy{}\PYGdefaultZhy{} Schedule respawn}
+      \PYGdefault{n}{target}\PYGdefault{p}{.}\PYGdefault{n}{chrs}\PYGdefault{p}{.}\PYGdefault{n}{respawn\PYGdefaultZus{}dt}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{mob.spawn\PYGdefaultZsq{}}\PYGdefault{p}{,}
+      \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{n}{proto\PYGdefaultZus{}id} \PYGdefault{o}{=} \PYGdefault{n}{target}\PYGdefault{p}{.}\PYGdefault{n}{proto\PYGdefaultZus{}id}\PYGdefault{p}{,} \PYGdefault{n}{pos} \PYGdefault{o}{=} \PYGdefault{n}{target}\PYGdefault{p}{.}\PYGdefault{n}{pos} \PYGdefault{p}{\PYGdefaultZcb{},}
+      \PYGdefault{n}{initiator}\PYGdefault{p}{.}\PYGdefault{n}{id}
+    \PYGdefault{p}{)}
+    \PYGdefault{n}{go\PYGdefaultZus{}remove}\PYGdefault{p}{(}\PYGdefault{n}{target}\PYGdefault{p}{.}\PYGdefault{n}{id}\PYGdefault{p}{)} \PYGdefault{c+c1}{\PYGdefaultZhy{}\PYGdefaultZhy{} Mob is caught, remove}
+  \PYGdefault{k}{end}
+\PYGdefault{k}{end}
+\end{Verbatim}

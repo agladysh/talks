@@ -1,0 +1,844 @@
+% Build with xetex.
+\documentclass[aspectratio=169,handout,bigger]{beamer}
+
+%% -------------------------------------------------------------------------- %%
+
+\usepackage{xunicode}
+\usepackage{xltxtra}
+\usepackage{graphicx}
+
+\usepackage{color}
+
+\usepackage{setspace}
+\usepackage{ragged2e}
+
+\usepackage[normalem]{ulem}
+
+\newcommand{\soutt}[1]{%
+    \renewcommand{\ULthickness}{1pt}%
+       \sout{#1}%
+    \renewcommand{\ULthickness}{.4pt}% Resetting to ulem default
+}
+
+\usepackage{minted}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,chains,calc,fit,matrix}
+
+%% -------------------------------------------------------------------------- %%
+
+\usepackage{polyglossia}
+\setmainlanguage{russian}
+\setotherlanguage{english}
+
+% NB: To get MS fonts for OS X:
+%
+% 1) Install MS Open XML Converter.
+% 2) Install OpenXML_all_fonts.pkg from inside of Converter's mpkg.
+%
+% http://www.labnol.org/software/tutorials/\
+% free-download-calibri-font-on-mac/3684/
+
+\setmainfont{Calibri}
+\setsansfont{Calibri}
+\setmonofont{Consolas}
+
+%% ========================================================================== %%
+
+\useinnertheme{circles}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{section in toc}[sections numbered]
+
+\definecolor{chart11}{RGB}{0, 0, 0}
+\setbeamercolor{title}{fg=chart11}
+\setbeamercolor{author}{fg=chart11}
+\setbeamercolor{frametitle}{fg=chart11}
+\setbeamercolor{itemize item}{fg=chart11}
+\setbeamercolor{itemize subitem}{fg=chart11}
+\setbeamercolor{itemize subsubitem}{fg=chart11}
+\setbeamercolor{section in toc}{fg=chart11}
+
+\setbeamerfont{title}{series=\bfseries,parent=structure}
+
+%% ========================================================================== %%
+
+\title{Rapid backend prototyping for a geolocation-based mobile game}
+\subtitle{With OpenResty, Redis and Docker}
+\author{\includegraphics[height=.4\textheight]{logo}}
+\institute{Alexander Gladysh <ag@logiceditor.com>\newline@agladysh}
+\date{FOSDEM 2017}
+
+%% ========================================================================== %%
+
+\begin{document}
+
+% Using [plain] to avoid frame number on the title page.
+\begin{frame}[plain]
+ \titlepage
+\end{frame}
+
+%% ========================================================================== %%
+
+\begin{frame}{Talk plan}
+
+\tableofcontents
+
+\end{frame}
+
+%% ========================================================================== %%
+
+\section*{}
+
+\begin{frame}{About me}
+
+\begin{itemize}
+\item Developing software since 2002
+\item Most of the time in gamedev
+\item Beyond that: high-load internet solutions, enterprise software etc. etc.
+\item Organizer of
+      \href{http://meetup.com/Lua-in-Moscow}{meetup.com/Lua-in-Moscow}.
+      Come to our Lua-related conference in Moscow on March 5!
+\end{itemize}
+
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{The Case}
+
+%% ========================================================================== %%
+
+\begin{frame}{Mobile games with geolocation}
+  \centering{\includegraphics[height=.75\textheight]{pokemongo}}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{The Goals}
+  \begin{itemize}
+    \item To try out a number of approaches to the gameplay,
+          to generate new ideas,
+          to figure out what is fun and what is not.
+    \item To get as cheaply as possible the framework that would allow
+          to iterate over gameplay variants as fast as possible.
+    \item To figure out technical limitations of the genre in practice.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Results}
+  A geolocation game server-side prototype along with a rudimentary
+  client-side was developed in less than 100 man-hours (2 calendar months)
+  \vspace*{1em}\par
+  We're rapidly iterating over the gameplay options
+  and develop the technology part of the project.
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{What is this talk about?}
+  \begin{itemize}
+    \item This talk is about the technology part of the project,
+    \item not about game-design
+    \item or monetization.
+  \end{itemize}
+  \vspace*{1em}\par
+  It is easier when ever to develop geolocation-based games.
+  \vspace*{1em}\par
+  I will show where you may start.
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{The Stack}
+
+%% ========================================================================== %%
+
+\begin{frame}{First prototype gameplay}
+  \begin{itemize}
+    \item The player is searching for
+          the mobs placed on a map by walking around;
+    \item Player has a set chance to catch the found mob.
+    \item Caught mobs increase a stats counter in player characteristics.
+    \item Caught mobs disappear from the map,
+          but respawn at the same place after a set time.
+    \item Admin users may add new mobs on the map.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{The Stack}
+  \begin{itemize}
+    \item Server:
+    \begin{itemize}
+      \item Redis,
+      \item OpenResty,
+      \item Docker.
+    \end{itemize}
+    \item Client:
+    \begin{itemize}
+      \item A single-page web application (in browser),
+      \item HTML5.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Not Invented Here Syndrome?}
+  Yes and No.
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Redis}
+  \begin{itemize}
+    \item Надёжное, хорошо зарекомендовавшее себя решение.
+    \item Работа с координатами из коробки:
+    \begin{itemize}
+      \item \texttt{GEOADD key longitude latitude member}
+      \item \texttt{GEORADIUS key longitude latitude radius m}
+    \end{itemize}
+    \item Достаточно удобный набор примитивов для хранения игровых объектов.
+    \item Хранимые процедуры на Lua.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{OpenResty}
+  \begin{itemize}
+    \item Дистрибутив nginx с поддержкой Lua, Redis и многим другим из коробки.
+    \item Очень быстро работает, достаточно дружелюбен, хорошо поддерживается.
+    \item Пригоден как для быстрого прототипирования, так и для продакшена.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Docker}
+  \begin{itemize}
+    \item Воспроизводимая кроссплатформенная среда для разработки.
+    \item Хорошо снимает боль по настройке окружения разработчика.
+    \item Окружение разработчика можно быстро превратить в прототип серверного окружения.
+    \item Требует обновления до достаточно свежей версии.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Браузер, HTML5}
+  \begin{itemize}
+    \item На начальном этапе сервер важнее.
+    \item Бои в augmented reality и прочие рюшечки делать не нужно,
+          можно представлять в голове.
+    \item На HTML5 можно быстро написать дёшевый и сердитый клиент.
+    \item Есть ограниченный (но достаточный) доступ к данным геолокации.
+  \end{itemize}
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{Docker}
+
+%% ========================================================================== %%
+
+\begin{frame}{Docker: как установить на Ubuntu}
+  \begin{itemize}
+    \item В Ubuntu, традиционно, старая версия.
+    \item За \texttt{wget | sh} больно бьём по рукам.
+    \item \texttt{docker} и \texttt{docker-machine}
+          устанавливаем из apt-репозитория докера.
+    \item \texttt{docker-compose} устанавливаем через \texttt{pip install}.
+    \item Про установку на других платформах читаем официальную документацию.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Docker на машине разработчика}
+
+\begin{center}
+\begin{tikzpicture}
+  every join/.style={line},    % Default linetype for connecting boxes
+  scale=1, transform shape
+]
+
+\tikzset{
+  basebase/.style={
+    align=center, minimum height=2em, minimum width=9em, color=chart11,
+    inner sep=.5em, node distance=3em and 11em
+  },
+  rect/.style={
+    basebase, draw, on grid
+  },
+  coord/.style={coordinate},
+  line/.style={->, draw, chart11},
+}
+
+\node[rect, rounded corners]                     (client)    {Клиент};
+\node[rect, rounded corners, below of=client]    (docker)    {localhost:8080};
+\node[rect, below of=docker]    (openresty) {OpenResty};
+\node[rect, below of=openresty] (redis)     {Redis};
+
+\draw [line] (client)    -- (docker);
+\draw [line] (docker)    -- (openresty);
+\draw [line] (openresty) -- (redis);
+
+\end{tikzpicture}
+\end{center}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{docker-compose.yml для разработки: Redis}
+\begin{minted}{text}
+version: "2"
+services:
+  redis:
+    image: redis
+    volumes:
+      - ./redis:/data
+    command: redis-server --appendonly yes
+  openresty: <...>
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{OpenResty: интересные места nginx.conf (в сокращении)}
+\begin{minted}{nginx}
+error_log logs/error.log notice;
+http {
+  include resolvers.conf;
+  lua_package_path "$prefix/lualib/?.lua;;";
+  lua_code_cache off; # TODO: Enable on production!
+  server {
+    listen 8080;
+    include mime.types;
+    default_type application/json;
+    location / { index index.html; root static/; }
+    location = /api/v1/ { content_by_lua_file 'api/index.lua'; }
+  }
+}
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{OpenResty: Dockerfile}
+\begin{minted}{docker}
+FROM openresty/openresty
+COPY bin/entrypoint.sh /usr/local/bin/openresty-entrypoint.sh
+COPY nginx/conf /usr/local/openresty/nginx/conf
+COPY nginx/lualib /usr/loca/openresty/nginx/lualib
+COPY nginx/lua /usr/loca/openresty/nginx/lua
+COPY nginx/static /usr/loca/openresty/nginx/static
+ENTRYPOINT /usr/local/bin/openresty-entrypoint.sh
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{OpenResty: entrypoint.sh}
+\begin{minted}{bash}
+#!/bin/sh
+grep nameserver /etc/resolv.conf \
+  | awk '{print  "resolver " $2 ";"}' \
+  > /usr/local/openresty/nginx/conf/resolvers.conf
+/usr/local/openresty/bin/openresty -g 'daemon off;' "$@"
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{docker-compose.yml для разработки: OpenResty}
+\begin{minted}{text}
+  <...>
+  openresty:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./nginx/lualib:/usr/local/openresty/nginx/lualib:ro
+      - ./nginx/api:/usr/local/openresty/nginx/api:ro
+      - ./nginx/static:/usr/local/openresty/nginx/static:ro
+    links:
+      - redis
+\end{minted}
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{HTTP API}
+
+%% ========================================================================== %%
+
+\begin{frame}{Вызовы API}
+  \begin{itemize}
+    \item Пользовательские вызовы:
+      \begin{itemize}
+        \item \texttt{/} состояние игрового мира,
+        \item \texttt{/go/:go-id/} состояние игрового объекта,
+        \item \texttt{/go/:go-id/act/:action-id} выполнение действия.
+      \end{itemize}
+    \item Системные вызовы:
+    \begin{itemize}
+      \item \texttt{/register} создание пользователя,
+      \item \texttt{/reset} сброс базы в исходное состояние,
+      \item \texttt{/patch} апгрейд базы до текущей версии.
+    \end{itemize}
+    \item NB: Админку (бэкофис) не делаем,
+          используем внутриигровые механики для администрирования игрового мира.
+  \end{itemize}
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{Устройство игрового мира}
+
+%% ========================================================================== %%
+
+\begin{frame}{Игровой объект}
+  \begin{itemize}
+    \item С точки зрения сервера игровой мир состоит из игровых объектов.
+    \item Игровой объект имеет численные характеристики и действия.
+    \item Игровые объекты могут иметь координаты.
+    \item Игровые объекты без координат должны принадлежать другим объектам
+          или быть их прототипами.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Цепочка прототипов}
+  \begin{itemize}
+    \item Игровой объект может иметь прототип.
+    \item Игровой объект --- прототип в свою очередь также может иметь прототип.
+    \item Игровой объект наследует характеристики и действия своих прототипов.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Характеристики}
+  \begin{itemize}
+    \item Характеристика --- именованное численное свойство игрового объекта.
+    \item Если у игрового объекта нет какой-то характеристики,
+          её значение берётся у ближайшего прототипа по цепочке
+          (если не нашли --- 0).
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Действия}
+  \begin{itemize}
+    \item Действие на игровом объекте --- идентификатор из таблицы
+          обработчиков действий.
+    \item Действие может быть инициировано игроком,
+          если у него достаточно на это прав.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Моб: Зелёная Жаба}
+\begin{minted}{lua}
+{
+  id = 'proto.mob.collectable';
+  chrs = { respawn_dt = 10 * 60 };
+  actions = { 'mob.collect' };
+};
+{
+  id = 'proto.mob.toad.green';
+  proto_id = 'proto.mob.collectable';
+  chrs = { escape_chance = 0.25 };
+};
+{
+  id = 'fa2eb7bca46c11e6be447831c1cebc82';
+  proto_id = 'proto.mob.toad.green';
+  geo = { lat = 55.7558, lon = 37.6173 };
+};
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Действие: поймать моба}
+\begin{minted}{lua}
+ACTIONS['mob.collect'] = function(target, initiator)
+  if
+    math.random() * initiator.chrs.collect_skill >
+    target.chrs.escape_chance
+  then
+    -- Inc number of catches for this mob type
+    go_inc_chr(initiator.id, target.proto_id, 1)
+    go_schedule_action_initiation( -- Schedule respawn
+      target.chrs.respawn_dt, 'mob.spawn',
+      { proto_id = target.proto_id, pos = target.pos },
+      initiator.id
+    )
+    go_remove(target.id) -- Mob is caught, remove
+  end
+end
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Выполнение отложенных действий}
+\begin{minted}{lua}
+local timestamp = os.time()
+local action_ids = redis:zrangebyscore('da', '-inf', timestamp)
+for i = 1, #action_ids do
+  -- Execute action_ids[i] action
+end
+redis:zremrangebyscore('da', '-inf', timestamp)
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Игрок}
+\begin{minted}{lua}
+{
+  id = 'proto.user';
+  chrs = { vision = 100, reach = 50 };
+};
+{
+  id = 'user.1';
+  geo = { lat = 55.7558, lon = 37.6173 };
+  chrs = { collect_skill = 0.5 };
+};
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Предмет: Админская шапка}
+\begin{minted}{lua}
+{
+  id = 'proto.item.wearable';
+  actions = {
+    ['item.don'] = { enabled = true };
+    ['item.doff'] = { enabled = false };
+  };
+}
+{
+  id = 'proto.item.admin-hat';
+  proto_id = 'proto.item.wearable';
+  grants = { 'user.admin' };
+  chrs = { collect_skill = 0.25 };
+};
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Выдадим админскую шапку пользователю}
+\begin{minted}{lua}
+local hat = go_new('proto.item.admin-hat')
+
+assert(go_get('user.1').stored[1] == nil)
+
+go_store('user.1', hat.id)
+
+assert(go_get('user.1').stored[1] == hat.id)
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Хранение ("storage")}
+  \begin{itemize}
+    \item Игровой объект может "хранить" другие объекты.
+    \item Хранимые объекты не "видны" извне хранящего объекта.
+    \item Пользователю доступны действия
+          непосредственно хранимых им объектов.
+    \item Характеристики хранимых объектов никак не влияют
+          на характеристики хранящих их объектов.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Действия на админской шапке}
+\begin{minted}{lua}
+ACTIONS['item.don'] = function(target, initiator)
+  go_unstore(initiator.id, target.id)
+  go_attach(initiator.id, target.id)
+  go_disable_action(target.id, 'item.don')
+  go_enable_action(target.id, 'item.doff')
+end
+
+ACTIONS['item.doff'] = function(target, initiator)
+  go_attach(initiator.id, target.id)
+  go_store(initiator.id, target.id)
+  go_disable_action(target.id, 'item.doff')
+  go_enable_action(target.id, 'item.don')
+end
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Прикрепление / надевание ("attachment")}
+  \begin{itemize}
+    \item К игровому объекту могут быть "прикреплены" другие объекты.
+    \item Прикреплённые объекты видны извне родительского объекта.
+    \item Пользователю доступны действия
+          прикреплённых непосредственно к нему объектов.
+    \item Характеристики прикреплённых объектов прибавляются
+          к характеристикам родительских объектов.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Предмет: Спавнилка зелёных жаб}
+\begin{minted}{lua}
+{
+  id = 'proto.item.spawner.toad.green';
+  actions = {
+    ['mob.spawn'] = {
+      requires = { 'user.admin' };
+      param = { proto_id = 'proto.mob.toad.green' };
+    };
+  };
+};
+\end{minted}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Права на действия}
+  \begin{itemize}
+    \item Действие доступно для выполнения только если \texttt{grants} игрока
+          содержит все записи из \texttt{requires} действия.
+    \item Прикреплённые к игроку ("надетые") предметы
+          добавляют ему свои \texttt{grants}.
+  \end{itemize}
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{Demo}
+
+%% ========================================================================== %%
+
+\begin{frame}{Demo}
+  \begin{itemize}
+    \item Current version of the application can be found here
+          \href{https://geo.logiceditor.com/}{geo.logiceditor.com}.
+    \item Sources are linked to at the same page.
+    \item The very first client is always \texttt{curl}.
+          You can try out the API using it by appending
+          \texttt{/api/v1} to the URL of the application.
+  \end{itemize}
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{Клиент}
+
+%% ========================================================================== %%
+
+\begin{frame}{Как работает клиент?}
+  \begin{itemize}
+    \item Инициализируются геолокация и гуглекарты.
+    \item Текущая позиция отправляется на сервер.
+    \item Сервер возвращает перечень видимых объектов с возможными действиями.
+    \item Объекты помечаются маркерами на карте и выводятся под ней вёрсткой.
+    \item Ожидаем активации действия пользователем либо смены координат.
+  \end{itemize}
+  \vspace*{1em}\par
+  NB:
+  \begin{itemize}
+    \item Для генерации имён жаб на основе их идентификаторов
+          используется chance.js.
+    \item Перерисовку лучше проводить по таймеру,
+          вне зависимости от цикла обновления данных.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Геолокация на HTML5}
+  \begin{itemize}
+    \item \texttt{navigator.geolocation.watchPosition(callback, options)}.
+    \item В Chrome пользуйтесь панелью разработчика Sensors для
+          отладки геолокации.
+    \item В Chrome по соображением безопасности отключена геолокация
+          для протокола HTTP (за исключением сайтов на localhost).
+          Используйте HTTPS, например, с сертификатами от Let's Encrypt.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}[fragile]{Google Maps}
+\begin{minted}{js}
+new google.maps.Map(assert(document.getElementById('map')), {
+  center: new google.maps.LatLng(pos.lat, pos.lon),
+  zoom: 18,
+  mapTypeId: google.maps.MapTypeId.ROADMAP,
+  disableDefaultUI: true,
+  disableDoubleClickZoom: true,
+  draggable: false,
+  scrollwheel: false,
+  styles: [ { featureType: "poi",
+    stylers: [ { visibility: "off" } ]
+  } ]
+});
+\end{minted}
+\end{frame}
+
+%% ========================================================================== %%
+
+\section{Итоги}
+
+%% ========================================================================== %%
+
+\begin{frame}{Проблемы проекта}
+  \begin{itemize}
+    \item Шумные данные от GPS.
+    \item Крайне низкая точность геолокации в зданиях.
+    \item ...
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{\soutt{Проблемы} Технические ограничения проекта}
+  \begin{itemize}
+    \item Шумные данные от GPS.
+    \item Крайне низкая точность геолокации в зданиях.
+    \item ...
+  \end{itemize}
+
+  Нет проблем. Есть ограничения, под которые нужно подстраивать геймплей.
+  Часть из них решается технологически. Нужно ли тратить время на это решение
+  --- один из вопросов, на которые должен ответить этап препродакшена.
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Недостающие механизмы}
+  \begin{itemize}
+    \item Самое крупное --- система событий.
+    \item Много мелких функций, например счётчик пройденных метров.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Ошибки}
+  \begin{itemize}
+    \item Поздновато добавили геолокациию.
+    \item Поздновато добавили карту в клиенте.
+    \item Мало выходили на улицу чтобы тестировать.
+    \item ...
+    \item Найдите сами, сравнив код на слайдах с кодом в проекте.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Итоги}
+  \begin{itemize}
+    \item Относительно малыми усилиями
+    \item мы сделали крошечную мобильную игру с геолокацией
+    \item и заложили фундамент для быстрой разработки большого числа
+          несложных прототипов
+    \item для поиска удачных вариантов геймплея в этом жанре.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Благодаря чему разработка быстрая?}
+  \begin{itemize}
+    \item В проекте небольшой объём простого кода,
+    \item использующего базовые механизмы и надёжные сторонние решения
+    \item для решения большого числа поставленных геймдизайнером задач.
+  \end{itemize}
+
+  \begin{itemize}
+    \item Аккуратное расширение возможностей этого кода
+    \item ещё больше расширит круг задач, которые можно будет решить,
+    \item поменяв несколько строк в конфиге.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Векторы развития проекта}
+  \begin{itemize}
+    \item \Huge{Новые варианты геймплея}
+    \item \large{Новые функции и механизмы}
+    \item \normalsize{Решение технических проблем}
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Как работать с гейм-дизайнером на ранних этапах прототипирования?}
+  \begin{itemize}
+    \item Быстро итерироваться.
+          В идеале --- садиться рядом, кодить и сразу получать фидбек.
+          Пробовать самому иногда делать рутинную часть работы гейм-дизайнера,
+          чтобы лучше понять, что именно мешает и тормозит процесс.
+    \item В первую очередь исправлять мешающие тестировать геймплей баги,
+          потом улучшать старые механизмы в коде и добавлять новые.
+    \item Если для новой геймплейной фичи нет механизма, добавлять его,
+          хотя бы в самой грубой форме, а не реализовывать решение в лоб.
+    \item Все прочие задуманные изменения в коде, в том числе рефакторинг,
+          реализовывать в порядке убывания боли от их отсутствия.
+  \end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\begin{frame}{Дорога к релизу}
+  \begin{itemize}
+    \item \soutt{Выбросить весь код и написать заново.}
+    \item Создать новый проект и вдумчиво вручную
+          перенести в него удачные части кода.
+    \item Неудачные --- переписать с нуля.
+  \end{itemize}
+\end{frame}
+
+% TODO: Cull down more slides!
+% TODO: Upload to the flash drive!
+
+%% ========================================================================== %%
+
+\section{Вопросы?}
+
+% Using [plain] to hide frame number.
+\begin{frame}[plain]{Questions?}
+
+\begin{center}
+\Huge{@agladysh}
+\end{center}
+
+\begin{center}
+\Large{ag@logiceditor.com}
+\end{center}
+
+\begin{center}
+\href{http://meetup.com/Lua-in-Moscow}{meetup.com/Lua-in-Moscow}
+\\
+Come to our Lua conference in March 5 in Moscow!
+\end{center}
+
+\end{frame}
+
+%% -------------------------------------------------------------------------- %%
+
+\end{document}

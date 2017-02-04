@@ -1,0 +1,15 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{n}{ACTIONS}\PYGdefault{p}{[}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{item.don\PYGdefaultZsq{}}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{k}{function}\PYGdefault{p}{(}\PYGdefault{n}{target}\PYGdefault{p}{,} \PYGdefault{n}{initiator}\PYGdefault{p}{)}
+  \PYGdefault{n}{go\PYGdefaultZus{}unstore}\PYGdefault{p}{(}\PYGdefault{n}{initiator}\PYGdefault{p}{.}\PYGdefault{n}{id}\PYGdefault{p}{,} \PYGdefault{n}{target}\PYGdefault{p}{.}\PYGdefault{n}{id}\PYGdefault{p}{)}
+  \PYGdefault{n}{go\PYGdefaultZus{}attach}\PYGdefault{p}{(}\PYGdefault{n}{initiator}\PYGdefault{p}{.}\PYGdefault{n}{id}\PYGdefault{p}{,} \PYGdefault{n}{target}\PYGdefault{p}{.}\PYGdefault{n}{id}\PYGdefault{p}{)}
+  \PYGdefault{n}{go\PYGdefaultZus{}disable\PYGdefaultZus{}action}\PYGdefault{p}{(}\PYGdefault{n}{target}\PYGdefault{p}{.}\PYGdefault{n}{id}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{item.don\PYGdefaultZsq{}}\PYGdefault{p}{)}
+  \PYGdefault{n}{go\PYGdefaultZus{}enable\PYGdefaultZus{}action}\PYGdefault{p}{(}\PYGdefault{n}{target}\PYGdefault{p}{.}\PYGdefault{n}{id}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{item.doff\PYGdefaultZsq{}}\PYGdefault{p}{)}
+\PYGdefault{k}{end}
+
+\PYGdefault{n}{ACTIONS}\PYGdefault{p}{[}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{item.doff\PYGdefaultZsq{}}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{k}{function}\PYGdefault{p}{(}\PYGdefault{n}{target}\PYGdefault{p}{,} \PYGdefault{n}{initiator}\PYGdefault{p}{)}
+  \PYGdefault{n}{go\PYGdefaultZus{}attach}\PYGdefault{p}{(}\PYGdefault{n}{initiator}\PYGdefault{p}{.}\PYGdefault{n}{id}\PYGdefault{p}{,} \PYGdefault{n}{target}\PYGdefault{p}{.}\PYGdefault{n}{id}\PYGdefault{p}{)}
+  \PYGdefault{n}{go\PYGdefaultZus{}store}\PYGdefault{p}{(}\PYGdefault{n}{initiator}\PYGdefault{p}{.}\PYGdefault{n}{id}\PYGdefault{p}{,} \PYGdefault{n}{target}\PYGdefault{p}{.}\PYGdefault{n}{id}\PYGdefault{p}{)}
+  \PYGdefault{n}{go\PYGdefaultZus{}disable\PYGdefaultZus{}action}\PYGdefault{p}{(}\PYGdefault{n}{target}\PYGdefault{p}{.}\PYGdefault{n}{id}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{item.doff\PYGdefaultZsq{}}\PYGdefault{p}{)}
+  \PYGdefault{n}{go\PYGdefaultZus{}enable\PYGdefaultZus{}action}\PYGdefault{p}{(}\PYGdefault{n}{target}\PYGdefault{p}{.}\PYGdefault{n}{id}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s}{item.don\PYGdefaultZsq{}}\PYGdefault{p}{)}
+\PYGdefault{k}{end}
+\end{Verbatim}

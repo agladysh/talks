@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+version: \PYGdefaultZdq{}2\PYGdefaultZdq{}
+services:
+  redis:
+    image: redis
+    volumes:
+      \PYGdefaultZhy{} ./redis:/data
+    command: redis\PYGdefaultZhy{}server \PYGdefaultZhy{}\PYGdefaultZhy{}appendonly yes
+  openresty: \PYGdefaultZlt{}...\PYGdefaultZgt{}
+\end{Verbatim}

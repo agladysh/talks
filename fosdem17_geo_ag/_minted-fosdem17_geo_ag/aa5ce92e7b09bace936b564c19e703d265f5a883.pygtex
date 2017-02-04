@@ -1,0 +1,14 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{k}{new} \PYGdefault{n+nx}{google}\PYGdefault{p}{.}\PYGdefault{n+nx}{maps}\PYGdefault{p}{.}\PYGdefault{n+nx}{Map}\PYGdefault{p}{(}\PYGdefault{n+nx}{assert}\PYGdefault{p}{(}\PYGdefault{n+nb}{document}\PYGdefault{p}{.}\PYGdefault{n+nx}{getElementById}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}map\PYGdefaultZsq{}}\PYGdefault{p}{)),} \PYGdefault{p}{\PYGdefaultZob{}}
+  \PYGdefault{n+nx}{center}\PYGdefault{o}{:} \PYGdefault{k}{new} \PYGdefault{n+nx}{google}\PYGdefault{p}{.}\PYGdefault{n+nx}{maps}\PYGdefault{p}{.}\PYGdefault{n+nx}{LatLng}\PYGdefault{p}{(}\PYGdefault{n+nx}{pos}\PYGdefault{p}{.}\PYGdefault{n+nx}{lat}\PYGdefault{p}{,} \PYGdefault{n+nx}{pos}\PYGdefault{p}{.}\PYGdefault{n+nx}{lon}\PYGdefault{p}{),}
+  \PYGdefault{n+nx}{zoom}\PYGdefault{o}{:} \PYGdefault{l+m+mi}{18}\PYGdefault{p}{,}
+  \PYGdefault{n+nx}{mapTypeId}\PYGdefault{o}{:} \PYGdefault{n+nx}{google}\PYGdefault{p}{.}\PYGdefault{n+nx}{maps}\PYGdefault{p}{.}\PYGdefault{n+nx}{MapTypeId}\PYGdefault{p}{.}\PYGdefault{n+nx}{ROADMAP}\PYGdefault{p}{,}
+  \PYGdefault{n+nx}{disableDefaultUI}\PYGdefault{o}{:} \PYGdefault{k+kc}{true}\PYGdefault{p}{,}
+  \PYGdefault{n+nx}{disableDoubleClickZoom}\PYGdefault{o}{:} \PYGdefault{k+kc}{true}\PYGdefault{p}{,}
+  \PYGdefault{n+nx}{draggable}\PYGdefault{o}{:} \PYGdefault{k+kc}{false}\PYGdefault{p}{,}
+  \PYGdefault{n+nx}{scrollwheel}\PYGdefault{o}{:} \PYGdefault{k+kc}{false}\PYGdefault{p}{,}
+  \PYGdefault{n+nx}{styles}\PYGdefault{o}{:} \PYGdefault{p}{[} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{n+nx}{featureType}\PYGdefault{o}{:} \PYGdefault{l+s+s2}{\PYGdefaultZdq{}poi\PYGdefaultZdq{}}\PYGdefault{p}{,}
+    \PYGdefault{n+nx}{stylers}\PYGdefault{o}{:} \PYGdefault{p}{[} \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{n+nx}{visibility}\PYGdefault{o}{:} \PYGdefault{l+s+s2}{\PYGdefaultZdq{}off\PYGdefaultZdq{}} \PYGdefault{p}{\PYGdefaultZcb{}} \PYGdefault{p}{]}
+  \PYGdefault{p}{\PYGdefaultZcb{}} \PYGdefault{p}{]}
+\PYGdefault{p}{\PYGdefaultZcb{});}
+\end{Verbatim}
