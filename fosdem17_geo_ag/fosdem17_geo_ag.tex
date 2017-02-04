@@ -97,7 +97,7 @@
 \item Most of the time in gamedev
 \item Beyond that: high-load internet solutions, enterprise software etc. etc.
 \item Organizer of
-      \href{http://meetup.com/Lua-in-Moscow}{meetup.com/Lua-in-Moscow}.
+      \href{http://meetup.com/Lua-in-Moscow}{meetup.com/Lua-in-Moscow}. \\
       Come to our Lua-related conference in Moscow on March 5!
 \end{itemize}
 
@@ -145,9 +145,9 @@
     \item or monetization.
   \end{itemize}
   \vspace*{1em}\par
-  It is easier when ever to develop geolocation-based games.
+  It now is easier when ever to develop geolocation-based games.
   \vspace*{1em}\par
-  I will show where you may start.
+  I will show where to begin.
 \end{frame}
 
 %% ========================================================================== %%
@@ -196,14 +196,14 @@
 
 \begin{frame}{Redis}
   \begin{itemize}
-    \item Надёжное, хорошо зарекомендовавшее себя решение.
-    \item Работа с координатами из коробки:
+    \item A reliable, proven solution.
+    \item Supports geoposition out of the box:
     \begin{itemize}
       \item \texttt{GEOADD key longitude latitude member}
       \item \texttt{GEORADIUS key longitude latitude radius m}
     \end{itemize}
-    \item Достаточно удобный набор примитивов для хранения игровых объектов.
-    \item Хранимые процедуры на Lua.
+    \item Useful set of primitives to store game objects in.
+    \item "Stored procedures" in Lua.
   \end{itemize}
 \end{frame}
 
@@ -211,9 +211,10 @@
 
 \begin{frame}{OpenResty}
   \begin{itemize}
-    \item Дистрибутив nginx с поддержкой Lua, Redis и многим другим из коробки.
-    \item Очень быстро работает, достаточно дружелюбен, хорошо поддерживается.
-    \item Пригоден как для быстрого прототипирования, так и для продакшена.
+    \item An nginx distributive supporting
+          Lua, Redis and many other things out of the box.
+    \item Very fast, rather friendly and well-maintained.
+    \item Useful both for quick prototyping and production environment.
   \end{itemize}
 \end{frame}
 
@@ -221,22 +222,23 @@
 
 \begin{frame}{Docker}
   \begin{itemize}
-    \item Воспроизводимая кроссплатформенная среда для разработки.
-    \item Хорошо снимает боль по настройке окружения разработчика.
-    \item Окружение разработчика можно быстро превратить в прототип серверного окружения.
-    \item Требует обновления до достаточно свежей версии.
+    \item Reproducible cross-platform development environment.
+    \item Efficiently relieves the development environment pain set up.
+    \item Can be quickly turned into a prototype of production environment
+          (it is arguable if it is suitable for real production).
+    \item Has to be updated to a sufficiently recent version.
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Браузер, HTML5}
+\begin{frame}{Browser, HTML5}
   \begin{itemize}
-    \item На начальном этапе сервер важнее.
-    \item Бои в augmented reality и прочие рюшечки делать не нужно,
-          можно представлять в голове.
-    \item На HTML5 можно быстро написать дёшевый и сердитый клиент.
-    \item Есть ограниченный (но достаточный) доступ к данным геолокации.
+    \item Server-side during early stages of development is more important.
+    \item Don't implement what can be imagined while play-testing,
+          like augmented-reality combat and other frills.
+    \item HTML5 is good to implement "quick and dirty" client.
+    \item NB: Geolocation data access is limited, but sufficient.
   \end{itemize}
 \end{frame}
 
@@ -246,20 +248,20 @@
 
 %% ========================================================================== %%
 
-\begin{frame}{Docker: как установить на Ubuntu}
+\begin{frame}{Docker: how to install on Ubuntu}
   \begin{itemize}
-    \item В Ubuntu, традиционно, старая версия.
-    \item За \texttt{wget | sh} больно бьём по рукам.
-    \item \texttt{docker} и \texttt{docker-machine}
-          устанавливаем из apt-репозитория докера.
-    \item \texttt{docker-compose} устанавливаем через \texttt{pip install}.
-    \item Про установку на других платформах читаем официальную документацию.
+    \item Traditionally, Ubuntu version is outdated.
+    \item Don't do \texttt{wget | sh}.
+    \item Install \texttt{docker} и \texttt{docker-machine}
+          from docker's apt-repository (see manual).
+    \item \texttt{docker-compose} is to be installed by \texttt{pip install}.
+    \item Read the manual for the installation on other platforms.
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Docker на машине разработчика}
+\begin{frame}{Docker on the developer's machine}
 
 \begin{center}
 \begin{tikzpicture}
@@ -279,7 +281,7 @@
   line/.style={->, draw, chart11},
 }
 
-\node[rect, rounded corners]                     (client)    {Клиент};
+\node[rect, rounded corners]                     (client)    {Client};
 \node[rect, rounded corners, below of=client]    (docker)    {localhost:8080};
 \node[rect, below of=docker]    (openresty) {OpenResty};
 \node[rect, below of=openresty] (redis)     {Redis};
@@ -295,7 +297,7 @@
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{docker-compose.yml для разработки: Redis}
+\begin{frame}[fragile]{docker-compose.yml for development: Redis}
 \begin{minted}{text}
 version: "2"
 services:
@@ -310,7 +312,7 @@ services:
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{OpenResty: интересные места nginx.conf (в сокращении)}
+\begin{frame}[fragile]{OpenResty: interesting parts of nginx.conf (reduced)}
 \begin{minted}{nginx}
 error_log logs/error.log notice;
 http {
@@ -356,7 +358,7 @@ grep nameserver /etc/resolv.conf \
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{docker-compose.yml для разработки: OpenResty}
+\begin{frame}[fragile]{docker-compose.yml for development: OpenResty}
 \begin{minted}{text}
   <...>
   openresty:
@@ -378,7 +380,7 @@ grep nameserver /etc/resolv.conf \
 
 %% ========================================================================== %%
 
-\begin{frame}{Вызовы API}
+\begin{frame}{API calls}
   \begin{itemize}
     \item Пользовательские вызовы:
       \begin{itemize}
