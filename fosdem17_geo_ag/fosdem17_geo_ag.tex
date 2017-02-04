@@ -98,7 +98,7 @@
 \item Beyond that: high-load internet solutions, enterprise software etc. etc.
 \item Organizer of
       \href{http://meetup.com/Lua-in-Moscow}{meetup.com/Lua-in-Moscow}. \\
-      Come to our Lua-related conference in Moscow on March 5!
+      Come to our Lua-related conference in Moscow on March 5th!
 \end{itemize}
 
 \end{frame}
@@ -184,12 +184,6 @@
       \item HTML5.
     \end{itemize}
   \end{itemize}
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Not Invented Here Syndrome?}
-  Yes and No.
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
@@ -382,74 +376,74 @@ grep nameserver /etc/resolv.conf \
 
 \begin{frame}{API calls}
   \begin{itemize}
-    \item Пользовательские вызовы:
+    \item Player calls:
       \begin{itemize}
-        \item \texttt{/} состояние игрового мира,
-        \item \texttt{/go/:go-id/} состояние игрового объекта,
-        \item \texttt{/go/:go-id/act/:action-id} выполнение действия.
+        \item \texttt{/} get game world state,
+        \item \texttt{/go/:go-id/} get game object state,
+        \item \texttt{/go/:go-id/act/:action-id} do action.
       \end{itemize}
-    \item Системные вызовы:
+    \item System calls:
     \begin{itemize}
-      \item \texttt{/register} создание пользователя,
-      \item \texttt{/reset} сброс базы в исходное состояние,
-      \item \texttt{/patch} апгрейд базы до текущей версии.
+      \item \texttt{/register} create a player,
+      \item \texttt{/reset} factory-reset the DB,
+      \item \texttt{/patch} upgrade the DP to the current version.
     \end{itemize}
-    \item NB: Админку (бэкофис) не делаем,
-          используем внутриигровые механики для администрирования игрового мира.
+    \item NB: We're not implementing a back-office UI to save effort,
+          but using in-game mechanics for the in-game management.
   \end{itemize}
 \end{frame}
 
 %% ========================================================================== %%
 
-\section{Устройство игрового мира}
+\section{Game World Architecture}
 
 %% ========================================================================== %%
 
-\begin{frame}{Игровой объект}
+\begin{frame}{Game Object}
   \begin{itemize}
-    \item С точки зрения сервера игровой мир состоит из игровых объектов.
-    \item Игровой объект имеет численные характеристики и действия.
-    \item Игровые объекты могут иметь координаты.
-    \item Игровые объекты без координат должны принадлежать другим объектам
-          или быть их прототипами.
+    \item From the server's point of view, game world consists of game objects.
+    \item A game object has numeric characteristics and a list of actions.
+    \item A game object may have coordinates.
+    \item Position-less game objects must either belong to other objects
+          or be used as their prototypes.
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Цепочка прототипов}
+\begin{frame}{Prototype chain}
   \begin{itemize}
-    \item Игровой объект может иметь прототип.
-    \item Игровой объект --- прототип в свою очередь также может иметь прототип.
-    \item Игровой объект наследует характеристики и действия своих прототипов.
+    \item A game object might have the prototype.
+    \item A prototype game object might also have the prototype.
+    \item A game object derives its characteristics and actions
+          from its prototypes.
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Характеристики}
+\begin{frame}{Characteristics}
   \begin{itemize}
-    \item Характеристика --- именованное численное свойство игрового объекта.
-    \item Если у игрового объекта нет какой-то характеристики,
-          её значение берётся у ближайшего прототипа по цепочке
-          (если не нашли --- 0).
+    \item A characterisic is a named numeric property of a game object.
+    \item If a game object does not have given characteristic set,
+          its value is taken from the closest prototype in chain
+          that has it set. If no such prototype found, the value is 0.
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Действия}
+\begin{frame}{Actions}
   \begin{itemize}
-    \item Действие на игровом объекте --- идентификатор из таблицы
-          обработчиков действий.
-    \item Действие может быть инициировано игроком,
-          если у него достаточно на это прав.
+    \item Game object action is a key from the Lua table of action handlers.
+    \item A player may initiate action from a game object
+          if he has sufficient permissions.
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{Моб: Зелёная Жаба}
+\begin{frame}[fragile]{A Green Toad Mob}
 \begin{minted}{lua}
 {
   id = 'proto.mob.collectable';
@@ -471,7 +465,7 @@ grep nameserver /etc/resolv.conf \
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{Действие: поймать моба}
+\begin{frame}[fragile]{Action: Catch the Mob}
 \begin{minted}{lua}
 ACTIONS['mob.collect'] = function(target, initiator)
   if
@@ -493,7 +487,7 @@ end
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{Выполнение отложенных действий}
+\begin{frame}[fragile]{Delayed Action Execution}
 \begin{minted}{lua}
 local timestamp = os.time()
 local action_ids = redis:zrangebyscore('da', '-inf', timestamp)
@@ -506,7 +500,7 @@ redis:zremrangebyscore('da', '-inf', timestamp)
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{Игрок}
+\begin{frame}[fragile]{Player}
 \begin{minted}{lua}
 {
   id = 'proto.user';
@@ -522,7 +516,7 @@ redis:zremrangebyscore('da', '-inf', timestamp)
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{Предмет: Админская шапка}
+\begin{frame}[fragile]{Item: Admin Hat}
 \begin{minted}{lua}
 {
   id = 'proto.item.wearable';
@@ -542,7 +536,7 @@ redis:zremrangebyscore('da', '-inf', timestamp)
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{Выдадим админскую шапку пользователю}
+\begin{frame}[fragile]{Let's issue Admin Hat to the player}
 \begin{minted}{lua}
 local hat = go_new('proto.item.admin-hat')
 
@@ -556,20 +550,19 @@ assert(go_get('user.1').stored[1] == hat.id)
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Хранение ("storage")}
+\begin{frame}{Storing game objects ("storage")}
   \begin{itemize}
-    \item Игровой объект может "хранить" другие объекты.
-    \item Хранимые объекты не "видны" извне хранящего объекта.
-    \item Пользователю доступны действия
-          непосредственно хранимых им объектов.
-    \item Характеристики хранимых объектов никак не влияют
-          на характеристики хранящих их объектов.
+    \item A game object ("container") might "store" other game objects.
+    \item Stored objects are not "visible" outside of their container.
+    \item Player (a game object too) may initiate actions
+          from the game objects he directly stores.
+    \item Stored game objects don't affect characteristics of their containers.
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{Действия на админской шапке}
+\begin{frame}[fragile]{Admin Hat actions}
 \begin{minted}{lua}
 ACTIONS['item.don'] = function(target, initiator)
   go_unstore(initiator.id, target.id)
@@ -589,20 +582,20 @@ end
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Прикрепление / надевание ("attachment")}
+\begin{frame}{Attaching / wearing objects}
   \begin{itemize}
-    \item К игровому объекту могут быть "прикреплены" другие объекты.
-    \item Прикреплённые объекты видны извне родительского объекта.
-    \item Пользователю доступны действия
-          прикреплённых непосредственно к нему объектов.
-    \item Характеристики прикреплённых объектов прибавляются
-          к характеристикам родительских объектов.
+    \item A game object may be attached to another game object.
+    \item Attached objects are visible outside of the parent object.
+    \item Player (a game object too) may initiate actions
+          from the game objects that are directly attached to it.
+    \item Attached game object characteristics are added to the parent object
+          characteristics.
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{Предмет: Спавнилка зелёных жаб}
+\begin{frame}[fragile]{Item: Green Toad Spawner}
 \begin{minted}{lua}
 {
   id = 'proto.item.spawner.toad.green';
@@ -618,12 +611,11 @@ end
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Права на действия}
+\begin{frame}{Action permissions}
   \begin{itemize}
-    \item Действие доступно для выполнения только если \texttt{grants} игрока
-          содержит все записи из \texttt{requires} действия.
-    \item Прикреплённые к игроку ("надетые") предметы
-          добавляют ему свои \texttt{grants}.
+    \item An action is available only if \texttt{grants} list of the player
+          contains all ids from \texttt{requires} list of the action.
+    \item Items, attached to the player add their \texttt{grants} to it.
   \end{itemize}
 \end{frame}
 
@@ -646,38 +638,34 @@ end
 
 %% ========================================================================== %%
 
-\section{Клиент}
+\section{Client}
 
 %% ========================================================================== %%
 
-\begin{frame}{Как работает клиент?}
+\begin{frame}{How does the client work?}
   \begin{itemize}
-    \item Инициализируются геолокация и гуглекарты.
-    \item Текущая позиция отправляется на сервер.
-    \item Сервер возвращает перечень видимых объектов с возможными действиями.
-    \item Объекты помечаются маркерами на карте и выводятся под ней вёрсткой.
-    \item Ожидаем активации действия пользователем либо смены координат.
+    \item Geolocation and googlemaps are initalized.
+    \item Current geoposition is sent to the server.
+    \item Server returns a list of visible objects with their available actions.
+    \item Markers are placed on the map for each object,
+          and object details are rendered below the map by the HTML layout.
+    \item Client awaits action initiation or coordinate change.
   \end{itemize}
   \vspace*{1em}\par
   NB:
   \begin{itemize}
-    \item Для генерации имён жаб на основе их идентификаторов
-          используется chance.js.
-    \item Перерисовку лучше проводить по таймеру,
-          вне зависимости от цикла обновления данных.
+    \item Toad names are generated with change.js using object uuid as a seed.
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Геолокация на HTML5}
+\begin{frame}{HTML5 Geolocation}
   \begin{itemize}
     \item \texttt{navigator.geolocation.watchPosition(callback, options)}.
-    \item В Chrome пользуйтесь панелью разработчика Sensors для
-          отладки геолокации.
-    \item В Chrome по соображением безопасности отключена геолокация
-          для протокола HTTP (за исключением сайтов на localhost).
-          Используйте HTTPS, например, с сертификатами от Let's Encrypt.
+    \item Use developer panel tab Sensors to debug geolocation in Chrome.
+    \item Chrome disables geolocation for HTTP sites (except localhost).
+          Use HTTPS (e.g. with a free Let's Encrypt certificate).
   \end{itemize}
 \end{frame}
 
@@ -702,125 +690,60 @@ new google.maps.Map(assert(document.getElementById('map')), {
 
 %% ========================================================================== %%
 
-\section{Итоги}
+\section{Conclusion}
 
 %% ========================================================================== %%
 
-\begin{frame}{Проблемы проекта}
+\begin{frame}{Problems}
   \begin{itemize}
-    \item Шумные данные от GPS.
-    \item Крайне низкая точность геолокации в зданиях.
+    \item Noisy geoposition data.
+    \item Extremely low precision of the geolocation in the buildings.
     \item ...
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{\soutt{Проблемы} Технические ограничения проекта}
+\begin{frame}{\soutt{Problems} Technical limitations}
   \begin{itemize}
-    \item Шумные данные от GPS.
-    \item Крайне низкая точность геолокации в зданиях.
+    \item Noisy geoposition data.
+    \item Extremely low precision of the geolocation in the buildings.
     \item ...
   \end{itemize}
 
-  Нет проблем. Есть ограничения, под которые нужно подстраивать геймплей.
-  Часть из них решается технологически. Нужно ли тратить время на это решение
-  --- один из вопросов, на которые должен ответить этап препродакшена.
+  There are no problems. There are technical limitations you have to
+  consider while designing gameplay. Some of the limitations may be
+  resolved technologically. If you need to spend time of it --- is one
+  of the questions for the preproduction stage.
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Недостающие механизмы}
+\begin{frame}{Missing mechanics in the current implementation}
   \begin{itemize}
-    \item Самое крупное --- система событий.
-    \item Много мелких функций, например счётчик пройденных метров.
+    \item Event system --- the largest.
+    \item Lots of small functions, like pedometer.
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Ошибки}
+\begin{frame}{A Way to Release}
   \begin{itemize}
-    \item Поздновато добавили геолокациию.
-    \item Поздновато добавили карту в клиенте.
-    \item Мало выходили на улицу чтобы тестировать.
-    \item ...
-    \item Найдите сами, сравнив код на слайдах с кодом в проекте.
-  \end{itemize}
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Итоги}
-  \begin{itemize}
-    \item Относительно малыми усилиями
-    \item мы сделали крошечную мобильную игру с геолокацией
-    \item и заложили фундамент для быстрой разработки большого числа
-          несложных прототипов
-    \item для поиска удачных вариантов геймплея в этом жанре.
-  \end{itemize}
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Благодаря чему разработка быстрая?}
-  \begin{itemize}
-    \item В проекте небольшой объём простого кода,
-    \item использующего базовые механизмы и надёжные сторонние решения
-    \item для решения большого числа поставленных геймдизайнером задач.
-  \end{itemize}
-
-  \begin{itemize}
-    \item Аккуратное расширение возможностей этого кода
-    \item ещё больше расширит круг задач, которые можно будет решить,
-    \item поменяв несколько строк в конфиге.
-  \end{itemize}
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Векторы развития проекта}
-  \begin{itemize}
-    \item \Huge{Новые варианты геймплея}
-    \item \large{Новые функции и механизмы}
-    \item \normalsize{Решение технических проблем}
-  \end{itemize}
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Как работать с гейм-дизайнером на ранних этапах прототипирования?}
-  \begin{itemize}
-    \item Быстро итерироваться.
-          В идеале --- садиться рядом, кодить и сразу получать фидбек.
-          Пробовать самому иногда делать рутинную часть работы гейм-дизайнера,
-          чтобы лучше понять, что именно мешает и тормозит процесс.
-    \item В первую очередь исправлять мешающие тестировать геймплей баги,
-          потом улучшать старые механизмы в коде и добавлять новые.
-    \item Если для новой геймплейной фичи нет механизма, добавлять его,
-          хотя бы в самой грубой форме, а не реализовывать решение в лоб.
-    \item Все прочие задуманные изменения в коде, в том числе рефакторинг,
-          реализовывать в порядке убывания боли от их отсутствия.
-  \end{itemize}
-\end{frame}
-
-%% -------------------------------------------------------------------------- %%
-
-\begin{frame}{Дорога к релизу}
-  \begin{itemize}
-    \item \soutt{Выбросить весь код и написать заново.}
-    \item Создать новый проект и вдумчиво вручную
-          перенести в него удачные части кода.
-    \item Неудачные --- переписать с нуля.
+    \item \soutt{Throw away the code and write it from scratch.}
+    \item Create a new project and thoughtfully and manually
+          move good parts of the prototype there.
+    \item Rewrite from scratch bad parts.
   \end{itemize}
 \end{frame}
 
 % TODO: Cull down more slides!
+% TODO: Announce the March 5th conference on the meetup page
 % TODO: Upload to the flash drive!
 
 %% ========================================================================== %%
 
-\section{Вопросы?}
+\section{Questions?}
 
 % Using [plain] to hide frame number.
 \begin{frame}[plain]{Questions?}
@@ -836,7 +759,7 @@ new google.maps.Map(assert(document.getElementById('map')), {
 \begin{center}
 \href{http://meetup.com/Lua-in-Moscow}{meetup.com/Lua-in-Moscow}
 \\
-Come to our Lua conference in March 5 in Moscow!
+Come to our Lua conference in March 5th in Moscow!
 \end{center}
 
 \end{frame}
