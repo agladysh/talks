@@ -49,8 +49,10 @@
 \setbeamertemplate{section in toc}[sections numbered]
 
 \definecolor{chart11}{RGB}{0, 0, 0}
-\setbeamercolor{title}{fg=chart11}
-\setbeamercolor{author}{fg=chart11}
+\setbeamercolor{title}{fg=white}
+\setbeamercolor{author}{fg=white}
+\setbeamercolor{institute}{fg=white}
+\setbeamercolor{date}{fg=white}
 \setbeamercolor{frametitle}{fg=chart11}
 \setbeamercolor{itemize item}{fg=chart11}
 \setbeamercolor{itemize subitem}{fg=chart11}
@@ -83,10 +85,17 @@
 
 \begin{document}
 
+\usebackgroundtemplate{
+  \includegraphics[width=\paperwidth,height=\paperheight]{background_title}
+}
+
 % Using [plain] to avoid frame number on the title page.
 \begin{frame}[plain]
  \titlepage
+ \vskip 10em
 \end{frame}
+
+\usebackgroundtemplate{}
 
 %% ========================================================================== %%
 
