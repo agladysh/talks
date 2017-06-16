@@ -1,5 +1,5 @@
 % Build with xetex.
-\documentclass[aspectratio=43,handout,bigger]{beamer}
+\documentclass[aspectratio=169,handout,bigger]{beamer}
 
 %% -------------------------------------------------------------------------- %%
 
@@ -75,9 +75,9 @@
 %% ========================================================================== %%
 
 \title{\includegraphics[height=.15\textheight]{logo}}
-\author{Quick functional UI sketches\\with Lua templates and mermaid.js}
-\institute{Alexander Gladysh\\@agladysh}
-\date{Lua in Moscow / Devconf 2017}
+\author{Быстрое прототипирование функциональных макетов UI\\на Lua и Mermaid.js}
+\institute{Александр Гладыш\\@agladysh}
+\date{Lua in Moscow / DevConf 2017}
 
 %% ========================================================================== %%
 
@@ -90,7 +90,7 @@
 
 %% ========================================================================== %%
 
-\begin{frame}{Talk plan}
+\begin{frame}{План}
 
 \tableofcontents
 
@@ -100,88 +100,90 @@
 
 \section*{}
 
-\begin{frame}{About me}
+\begin{frame}{Обо мне}
 
 \begin{itemize}
-\item Programmer background
-\item Mainly doing management work now
-\item In löve with Lua since 2005
+\item Программист
+\item Сейчас основном занимаюсь управлением
+\item Пишу на Lua с 2005-го года
 \end{itemize}
 
 \end{frame}
 
 %% ========================================================================== %%
-\section{The Case}
+\section{Кейс}
 %% ========================================================================== %%
 
-\begin{frame}{The Case}
+\begin{frame}{Кейс}
   \begin{itemize}
-    \item A huge professional enterprise application
-    \item being converted from 20-year-old windows app
-    \item to a modern SPA web-app.
+    \item Огромная профессиональная энтерпрайз-система
+    \item обновляется от 20-летнего приложения для Windows
+    \item до современного одностраничного веб-приложения.
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{The product is huge}
-  Sufficient expertise can only be found on a team level:
+\begin{frame}{Система огромна}
+  Ни один человек не в состоянии при проектировании принять обоснованное решение
+  по сложному вопросу в одиночку
 
   \begin{itemize}
-    \item Technology experts don't have product-level vision
-    \item PO and PM don't draw professionally
-          (and lack deep insight on the tech)
-    \item Designer does not have the professional-level technology expertise
+    \item У экспертов в технологии нет видения нового продукта в целом
+    \item ПМ и ПО не рисуют профессионально
+          и у них не всегда есть действительно глубокое понимания
+          аспектов технологии
+    \item Дизайнер имеет лишь поверхностное понимание технологии
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{The UI design and development process}
-  For each "screen" in the application:
+\begin{frame}{Процесс проектирования и дизайна UI}
+  Для каждого "экрана" в приложении:
 
   \begin{itemize}
-    \item Concept
-    \item Functional sketches and (sometimes) interactive studies
-    \item Design sketches
-    \item Layout implementation
-    \item Business logic implementation
+    \item Концепция
+    \item Функциональные макеты и (иногда) интерактивные эскизы
+    \item Дизайн-макеты
+    \item Вёрстка
+    \item Реализация бизнес-логики
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{A functional sketch}
-  What is on the screen, how does it WORK?
+\begin{frame}{Функциональный макет}
+  Что должно находиться на экране, как это будет РАБОТАТЬ?
 
   \centering{\includegraphics[height=.75\textheight]{seatmap}}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{A design sketch}
-  How does it LOOK?
+\begin{frame}{Дизайн-макет}
+  Как это должно ВЫГЛЯДЕТЬ?
 
   \centering{\includegraphics[height=.75\textheight]{EQUIP-1_2}}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Goals}
+\begin{frame}{Задачи}
   \begin{itemize}
-    \item I need a diagram of the flow between app screens
-    \item I need functional sketches of the screens themselves
-    \item Basically it doesn't matter how I make them as long
-          as they are easy to make and change and there are some
-          facilities for reuse.
+    \item Нужна диаграмма переходов между экранами приложения.
+    \item Нужны функциональные макеты самих экранов.
+    \item В принципе не важно как я получу эту диаграмму и макеты,
+          до тех пор пока их легко сделать и изменить
+          и есть хоть какие-то механизмы для повторного использования наработок.
   \end{itemize}
 \end{frame}
 
 %% ========================================================================== %%
-\section{Approaches to design}
+\section{Подходы к проектированию}
 %% ========================================================================== %%
 
-\begin{frame}{What tools to use?}
+\begin{frame}{Инструменты}
   \begin{itemize}
     \item Photoshop (Krita, Gimp...)
     \item InkScape
@@ -192,9 +194,10 @@
     \item ...
   \end{itemize}
   \vskip 1em
-  I'm a programmer, I'm better with structured text than with images.
+  Я --- программист.
+  Мне легче работать со структурированным текстом чем с изображениями.
   \vskip 1em
-  I work fastest with the keyboard, not having to touch the mouse.
+  Быстрее всего я работаю с клавиатурой, не трогая мышь.
 \end{frame}
 
 %% ========================================================================== %%
@@ -209,7 +212,7 @@
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{Screen Flow Diagram}
+\begin{frame}[fragile]{Диаграмма переходов между экранами}
   \begin{columns}
     \begin{column}{.5\textwidth}
 \begin{minted}{text}
@@ -222,14 +225,14 @@ list-->|Create|new
 \end{minted}
 \end{column}
 \begin{column}{.5\textwidth}
-\centering{\includegraphics[width=\textwidth]{flights-1}}
+\centering{\includegraphics[height=.9\textheight]{flights-1}}
 \end{column}
 \end{columns}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{Screen Flow Diagram (II)}
+\begin{frame}[fragile]{Диаграма переходов между экранами (II)}
   \begin{columns}
     \begin{column}{.5\textwidth}
 \begin{minted}{html}
@@ -244,14 +247,14 @@ list-->|"
 \end{minted}
 \end{column}
 \begin{column}{.5\textwidth}
-\centering{\includegraphics[width=\textwidth]{flights-2}}
+\centering{\includegraphics[height=.9\textheight]{flights-2}}
 \end{column}
 \end{columns}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{Screen Prototypes}
+\begin{frame}[fragile]{Функциональные макеты экранов}
   \begin{columns}
     \begin{column}{.5\textwidth}
 \begin{minted}{text}
@@ -276,7 +279,7 @@ list-->|"
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{Screen Prototypes (II)}
+\begin{frame}[fragile]{Функциональные макеты экранов (II)}
   \begin{columns}
     \begin{column}{.6\textwidth}
 \begin{minted}{text}
@@ -297,24 +300,24 @@ new-->|"<u>Cancel</u>"|list
 \end{minted}
     \end{column}
     \begin{column}{.3\textwidth}
-      \centering{\includegraphics[width=\textwidth]{flights-4}}
+      \centering{\includegraphics[height=.9\textheight]{flights-4}}
     \end{column}
   \end{columns}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Basic Documentation Structure}
+\begin{frame}{Результаты}
   \centering{
-    \includegraphics[width=.3\textwidth]{flights-1}
-    \includegraphics[width=.3\textwidth]{flights-3}
-    \includegraphics[width=.3\textwidth]{flights-4}
+    \includegraphics[width=.28\textwidth]{flights-1}
+    \includegraphics[width=.28\textwidth]{flights-3}
+    \includegraphics[width=.28\textwidth]{flights-4}
   }
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{It is hard to do HTML without templates: list}
+\begin{frame}[fragile]{Без шаблонов тяжко: list}
 \begin{minted}{text}
 <b>${title List of Flights}</b><hr>
 
@@ -326,7 +329,7 @@ ${link new <button>Create</button>}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{It is hard to do HTML without templates: new}
+\begin{frame}[fragile]{Без шаблонов тяжко: new}
 \begin{minted}{text}
 <b>${title New Flight}</b><hr>
 
@@ -345,10 +348,10 @@ ${link list <button>Cancel</button>}
 \end{frame}
 
 %% ========================================================================== %%
-\section{Lugram Templates}
+\section{Шаблоны Lugram}
 %% ========================================================================== %%
 
-\begin{frame}[fragile]{Basic helpers}
+\begin{frame}[fragile]{Базовые хелперы}
 \begin{minted}{text}
 ${title New Flight}
 \end{minted}
@@ -366,7 +369,7 @@ ${link list <button>Create</button>}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{Basic helpers: pass-through definitions}
+\begin{frame}[fragile]{Базовые хелперы: pass-through макросы}
 \begin{minted}{text}
 ${define title {{'*', 'text'}} [[${text}]]}
 
@@ -414,7 +417,7 @@ end
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{helpers: definitions using Lua}
+\begin{frame}[fragile]{Хелперы: код на Lua}
 \begin{minted}{text}
 ${define title {{'*', 'text'}} function(context)
   local text = context:replace(context.text)
@@ -450,20 +453,20 @@ end
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Diagram styles}
-  Depending on how you define \${title} and \${link},
-  you get several kinds of diagram from the same set of templates:
+\begin{frame}{Виды диаграмм}
+  В зависимости от того, как определить \${title} and \${link},
+  можно получить несколько видов диаграмм из одного набора шаблонов:
 
   \begin{itemize}
-    \item Outline diagram (titles and arrows only, "screen flow")
-    \item Closeup diagram (screen content and flow from this screen to others)
-    \item Printable diagram (screen content only)
+    \item Outline (только заголовки и стрелки, "переходы между экранами")
+    \item Closeup (содержимое "текущего" экрана и переходы из него в другие экраны)
+    \item Printable (только содержимое "текущего" экрана)
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{More Useful helpers}
+\begin{frame}[fragile]{Некоторые другие полезные хелперы}
 \begin{minted}{text}
 ${define # {{'*', 'comment'}} [[]]}
 ${define --[HR]------...--------- {} [[<hr>]]}
@@ -477,7 +480,7 @@ end}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{with helper}
+\begin{frame}[fragile]{Хелпер with}
 \begin{minted}{text}
 ${define with {{'table', 'more_context'},
   {'*', 'body'}} function(context)
@@ -498,7 +501,7 @@ ${with {editable = true} ${form}}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}[fragile]{with helper (II)}
+\begin{frame}[fragile]{Хелпер with (II)}
 \begin{minted}{html}
 ${define histogram {{'word', 'a'},
   {'word', 'b'}, {'word', 'c'}} [[
@@ -516,63 +519,67 @@ ${histogram 1 2 3}
 \end{frame}
 
 %% ========================================================================== %%
-\section{Conclusion}
+\section{В завершение}
 %% ========================================================================== %%
 
-\begin{frame}{Some statistics}
+\begin{frame}{Немного статистики}
   \begin{itemize}
-    \item Two days to implement core, about 250 LOC.
-    \item After six months of non-fulltime usage, core grew to about 330 LOC,
-          mostly additional diagnostics.
-    \item About 60 sketches finalized (5KLOC of templates), more to come.
+    \item Ядро примерно в 250 строк было написано за два дня.
+    \item После шести месяцев нефуллтайм использования ядро выросло
+          примерно до 330 строк кода. В основном была добавлена диагностика.
+    \item Разработано порядка 60 макетов (5 тысяч строк кода шаблонов),
+          будет ещё больше.
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Was it worth it?}
-  Yes.
+\begin{frame}{Стоит ли овчинка выделки?}
+  Да.
   \begin{itemize}
-    \item I've got a low-cost lightweight flexible framework
-          for design that does not chafe in wrong places.
-    \item Its output, while not ideal, is reasonably understandable
-          by all members of the team.
-    \item Also: much fun implementing yet another template engine.
+    \item Получился дешёвый легковесный и гибкий фреймворк
+          для разработки функциональных макетов,
+          с которым мне лично легко работать.
+    \item Выдача этого фреймворка, хотя и не идеальна,
+          вполне доступна для понимания всеми членами команды.
+    \item (И было прикольно написать ещё один шаблонизатор!)
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Why not X?}
+\begin{frame}{Почему не X?}
   \begin{itemize}
-    \item The cost is so low, the adaptation of existing tool to my requirements
-          (or just learning the proper ropes) would probably cost
-          about the same.
-    \item But if you know a good candidate that fits here, please do chime in.
+    \item Разработка Lugram потребовала настолько мало усилий,
+          что адаптация существующего инструмента под мои нужды
+          (или даже просто его освоение), вероятно,
+          стоили было бы столько же или больше.
+    \item Но если вы знаете подходящий инструмент --- делитесь!
   \end{itemize}
 \end{frame}
 
 %% -------------------------------------------------------------------------- %%
 
-\begin{frame}{Problems}
+\begin{frame}{Проблемы}
   \begin{itemize}
-    \item Error diagnostics and debugging for templates.
-          Almost non-existent. Lots of low-hanging fruit there.
-    \item Debugging of the HTML output render. IE6-hard,
-          rather difficult to improve. Keep HTML simple.
-    \item Expressive power of the language could be improved.
-          No need so far.
+    \item Диагностика ошибок и отладка.
+          В данный момент почти полностью отсутствуют.
+          Небольшими усилиями можно добиться значительных улучшений.
+    \item Отладка отрисовки HTML. Сложно как в IE6. Очень сложно улучшить.
+          Нужно следить за тем, чтобы HTML выходил максимально простым.
+    \item Можно расширить выразительные возможности языка.
+          Но имеющихся пока вполне достаточно.
   \end{itemize}
 \end{frame}
 
 %% ========================================================================== %%
 
-\section{Questions?}
+\section{Вопросы?}
 
 %% ========================================================================== %%
 
 % Using [plain] to hide frame number.
-\begin{frame}[plain]{Questions?}
+\begin{frame}[plain]{Вопросы?}
 
 \begin{center}
 \Huge{@agladysh}
@@ -591,3 +598,6 @@ https://github.com/tais-aero/lugram
 %% ========================================================================== %%
 
 \end{document}
+
+% Пропорции слайда
+% Логотип девконфа на слайдах
