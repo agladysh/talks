@@ -7,3 +7,4 @@
 *.vrb
 *.pyg
 .DS_Store
+_minted-*/
